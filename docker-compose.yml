@@ -1,0 +1,9 @@
+version: "3.4"
+
+services:
+  tradistonks-client:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - 3080:3000
