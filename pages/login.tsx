@@ -1,4 +1,4 @@
-import {Form, Input} from "semantic-ui-react";
+import {Form, Input, Button} from "semantic-ui-react";
 
 export default function Login() {
   return (
@@ -17,6 +17,7 @@ export default function Login() {
         <label>Password</label>
         <Input type='password'/>
       </Form.Field>
+      <Button>Submit</Button>
     </Form>
   );
 }

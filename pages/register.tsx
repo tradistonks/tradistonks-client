@@ -1,4 +1,4 @@
-import {Form, Input} from "semantic-ui-react";
+import {Form, Input, Button} from "semantic-ui-react";
 
 export default function Register() {
   return (
@@ -25,6 +25,7 @@ export default function Register() {
         <label>Confirmed Password</label>
         <Input type='password'/>
       </Form.Field>
+      <Button>Submit</Button>
     </Form>
   );
 }
