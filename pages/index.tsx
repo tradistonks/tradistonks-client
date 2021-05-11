@@ -1,5 +1,5 @@
+import React from 'react';
+
 export default function Home() {
-  return (
-    <div>TradiStonks</div>
-  );
+  return <div>TradiStonks</div>;
 }
