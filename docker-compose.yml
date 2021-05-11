@@ -5,5 +5,15 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.dev
+    volumes:
+      - ./client/components:/usr/src/app/components
+      - ./client/models:/usr/src/app/models
+      - ./client/pages:/usr/src/app/pages
+      - ./client/public:/usr/src/app/public
+      - ./client/services:/usr/src/app/services
+      - ./client/styles:/usr/src/app/styles
+      - ./client/utils:/usr/src/app/utils
+      - ./client/hooks:/usr/src/app/hooks
+      - ./client/icons:/usr/src/app/icons
     ports:
       - 3080:3000
