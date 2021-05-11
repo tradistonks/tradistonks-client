@@ -6,14 +6,14 @@ services:
       context: .
       dockerfile: Dockerfile.dev
     volumes:
-      - ./client/components:/usr/src/app/components
-      - ./client/models:/usr/src/app/models
-      - ./client/pages:/usr/src/app/pages
-      - ./client/public:/usr/src/app/public
-      - ./client/services:/usr/src/app/services
-      - ./client/styles:/usr/src/app/styles
-      - ./client/utils:/usr/src/app/utils
-      - ./client/hooks:/usr/src/app/hooks
-      - ./client/icons:/usr/src/app/icons
+      - ./components:/usr/src/app/components
+      - ./models:/usr/src/app/models
+      - ./pages:/usr/src/app/pages
+      - ./public:/usr/src/app/public
+      - ./services:/usr/src/app/services
+      - ./styles:/usr/src/app/styles
+      - ./utils:/usr/src/app/utils
+      - ./hooks:/usr/src/app/hooks
+      - ./icons:/usr/src/app/icons
     ports:
       - 3080:3000
