@@ -17,3 +17,7 @@ services:
       - ./icons:/usr/src/app/icons
     ports:
       - 3080:3000
+    env_file: .env
+    environment:
+      API_EXTERNAL_HOST: ${API_EXTERNAL_HOST}
+      API_INTERNAL_HOST: ${API_INTERNAL_HOST}
