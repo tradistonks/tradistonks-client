@@ -2,3 +2,4 @@
 *.svg
 *.ico
 node_modules
+next.config.js
