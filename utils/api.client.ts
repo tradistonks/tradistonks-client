@@ -63,3 +63,14 @@ export async function login(email: string, password: string) {
     },
   });
 }
+
+export async function register(email: string, username: string, password: string, password_confirmation: string) {
+  return request<LoginResponseDTO>('POST', '/users', {
+    body: {
+      email,
+      username,
+      password,
+      password_confirmation
+    },
+  });
+}

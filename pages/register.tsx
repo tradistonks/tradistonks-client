@@ -1,32 +1,44 @@
-import { Form, Input, Button } from 'semantic-ui-react';
+import { Button, Form, Input, notification } from 'antd';
 import React from 'react';
+import * as api from '../utils/api';
 
 export default function Register() {
+  type LoginFormData = {
+    email: string;
+    username: string;
+    password: string;
+    passwordConfirmation: string;
+  };
+
+  const onRegister = async ({ email, username, password, passwordConfirmation}: LoginFormData) => {
+    const { error } = await api.client.register(email,username, password, passwordConfirmation);
+
+    if (error) {
+      notification.error({
+        message: 'Failed to register',
+        description: error,
+      });
+    }
+  };
   return (
-    <Form>
-      <Form.Field
-        id="form-input-control-error-email"
-        control={Input}
-        label="Email"
-        placeholder="test@gmail.com"
-        error={{
-          content: 'Please enter a valid email address',
-          pointing: 'below',
-        }}
-      />
-      <Form.Field>
-        <label>Username</label>
-        <input placeholder="Username" />
-      </Form.Field>
-      <Form.Field>
-        <label>Password</label>
+    <Form labelCol={{ span: 4 }} wrapperCol={{ span: 20 }} onFinish={onRegister}>
+      <Form.Item name="email" label="Email" rules={[{ required: true }]}>
+        <Input />
+      </Form.Item>
+      <Form.Item name="username" label="Username" rules={[{ required: true }]}>
+        <Input />
+      </Form.Item>
+      <Form.Item name="password" label="Password" rules={[{ required: true }]}>
         <Input type="password" />
-      </Form.Field>
-      <Form.Field>
-        <label>Confirmed Password</label>
+      </Form.Item>
+      <Form.Item name="passwordConfirmation" label="Confirmed Password" rules={[{ required: true }]}>
         <Input type="password" />
-      </Form.Field>
-      <Button>Submit</Button>
+      </Form.Item>
+      <Form.Item>
+        <Button type="primary" htmlType="submit">
+          Login
+        </Button>
+      </Form.Item>
     </Form>
   );
 }
