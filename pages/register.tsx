@@ -11,7 +11,7 @@ export default function Register() {
   };
 
   const onRegister = async ({ email, username, password, passwordConfirmation}: LoginFormData) => {
-    const { error } = await api.client.register(email,username, password, passwordConfirmation);
+    const { data, error } = await api.client.register(email,username, password, passwordConfirmation);
 
     if (error) {
       notification.error({
@@ -19,6 +19,8 @@ export default function Register() {
         description: error,
       });
     }
+    console.log(data!);
+
   };
   return (
     <Form labelCol={{ span: 4 }} wrapperCol={{ span: 20 }} onFinish={onRegister}>
@@ -36,7 +38,7 @@ export default function Register() {
       </Form.Item>
       <Form.Item>
         <Button type="primary" htmlType="submit">
-          Login
+          Register
         </Button>
       </Form.Item>
     </Form>
