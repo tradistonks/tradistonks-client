@@ -9,9 +9,8 @@
     "lint": "eslint \"**/*.{jsx,tsx,js,ts}\""
   },
   "dependencies": {
-    "antd": "^4.15.5",
-    "axios": "^0.21.1",
-    "bootstrap": "^4.6.0",
+    "@monaco-editor/react": "^4.1.3",
+    "monaco-editor": "^0.23.0",
     "next": "10.1.3",
     "query-string": "^7.0.0",
     "react": "17.0.2",
