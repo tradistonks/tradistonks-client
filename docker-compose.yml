@@ -1,5 +1,10 @@
 version: "3.4"
 
+networks:
+  tradistonks-api:
+    external: true
+    name: tradistonks-api
+
 services:
   tradistonks-client:
     build:
@@ -15,6 +20,8 @@ services:
       - ./utils:/usr/src/app/utils
       - ./hooks:/usr/src/app/hooks
       - ./icons:/usr/src/app/icons
+    networks:
+      - tradistonks-api
     ports:
       - 3080:3000
     env_file: .env

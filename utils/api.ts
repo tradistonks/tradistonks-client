@@ -1,1 +1,1 @@
-export * as client from './api.client';
+export * as server from './api.server';
