@@ -1,6 +1,9 @@
-import { Button, Form, Input, notification } from 'antd';
+import { Button, Input, notification } from 'antd';
 import React from 'react';
 import * as api from '../utils/api';
+import Form from '../components/atoms/Form/Form';
+import FormItem from '../components/atoms/FormItem/FormItem';
+import Page from '../components/templates/Page/Page';
 
 export default function Register() {
   type LoginFormData = {
@@ -33,32 +36,32 @@ export default function Register() {
     console.log(data!);
   };
   return (
+    <Page title="Register" subTitle="Create a new account">
     <Form
-      labelCol={{ span: 4 }}
-      wrapperCol={{ span: 20 }}
       onFinish={onRegister}
     >
-      <Form.Item name="email" label="Email" rules={[{ required: true }]}>
+      <FormItem name="email" label="Email" rules={[{ required: true }]}>
         <Input />
-      </Form.Item>
-      <Form.Item name="username" label="Username" rules={[{ required: true }]}>
+      </FormItem>
+      <FormItem name="username" label="Username" rules={[{ required: true }]}>
         <Input />
-      </Form.Item>
-      <Form.Item name="password" label="Password" rules={[{ required: true }]}>
+      </FormItem>
+      <FormItem name="password" label="Password" rules={[{ required: true }]}>
         <Input type="password" />
-      </Form.Item>
-      <Form.Item
+      </FormItem>
+      <FormItem
         name="passwordConfirmation"
         label="Confirmed Password"
         rules={[{ required: true }]}
       >
         <Input type="password" />
-      </Form.Item>
-      <Form.Item>
+      </FormItem>
+      <FormItem>
         <Button type="primary" htmlType="submit">
           Register
         </Button>
-      </Form.Item>
+      </FormItem>
     </Form>
+    </Page>
   );
 }
