@@ -10,8 +10,18 @@ export default function Register() {
     passwordConfirmation: string;
   };
 
-  const onRegister = async ({ email, username, password, passwordConfirmation}: LoginFormData) => {
-    const { data, error } = await api.client.register(email,username, password, passwordConfirmation);
+  const onRegister = async ({
+    email,
+    username,
+    password,
+    passwordConfirmation,
+  }: LoginFormData) => {
+    const { data, error } = await api.client.register(
+      email,
+      username,
+      password,
+      passwordConfirmation,
+    );
 
     if (error) {
       notification.error({
@@ -19,11 +29,15 @@ export default function Register() {
         description: error,
       });
     }
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     console.log(data!);
-
   };
   return (
-    <Form labelCol={{ span: 4 }} wrapperCol={{ span: 20 }} onFinish={onRegister}>
+    <Form
+      labelCol={{ span: 4 }}
+      wrapperCol={{ span: 20 }}
+      onFinish={onRegister}
+    >
       <Form.Item name="email" label="Email" rules={[{ required: true }]}>
         <Input />
       </Form.Item>
@@ -33,7 +47,11 @@ export default function Register() {
       <Form.Item name="password" label="Password" rules={[{ required: true }]}>
         <Input type="password" />
       </Form.Item>
-      <Form.Item name="passwordConfirmation" label="Confirmed Password" rules={[{ required: true }]}>
+      <Form.Item
+        name="passwordConfirmation"
+        label="Confirmed Password"
+        rules={[{ required: true }]}
+      >
         <Input type="password" />
       </Form.Item>
       <Form.Item>

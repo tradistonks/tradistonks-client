@@ -1,12 +1,6 @@
 import React from 'react';
+import Page from '../components/templates/Page/Page';
 
-//import Header from '../components/Header';
-import Navigate from "../components/header/navbar";
-
-const Home = () => {
-  return (
-    <Navigate/>
-  );
-};
-
-export default Home;
+export default function HomePage() {
+  return <Page title="Tradistonks" subTitle="Home"></Page>;
+}
