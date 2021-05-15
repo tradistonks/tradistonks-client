@@ -4,6 +4,7 @@ import * as api from '../utils/api';
 import Form from '../components/atoms/Form/Form';
 import FormItem from '../components/atoms/FormItem/FormItem';
 import Page from '../components/templates/Page/Page';
+import Link from 'next/link';
 
 export default function Login() {
   type LoginFormData = {
@@ -41,6 +42,9 @@ export default function Login() {
             Login
           </Button>
           </FormItem>
+          <Link href="/register">
+            <a>Create a new account</a>
+          </Link>
       </Form>
     </Page>
   );
