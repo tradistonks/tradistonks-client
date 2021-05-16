@@ -1,0 +1,19 @@
+.node {
+    height: 22px;
+    line-height: 22px;
+    display: flex;
+    align-items: center;
+    color: #cccccc;
+
+    &:hover {
+        cursor: pointer;
+
+        &:not(.selected):not(.focused) {
+            background-color: #2a2d2e;
+        }
+    }
+
+    svg {
+        height: 100%;
+    }
+}

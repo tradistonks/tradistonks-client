@@ -20,7 +20,8 @@
     "react-github-login": "^1.0.3",
     "react-router-dom": "^5.2.0",
     "semantic-ui-css": "^2.4.1",
-    "semantic-ui-react": "^2.0.3"
+    "semantic-ui-react": "^2.0.3",
+    "seti-icons-react": "^0.2.0"
   },
   "devDependencies": {
     "@types/node": "^15.0.1",

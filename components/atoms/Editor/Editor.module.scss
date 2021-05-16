@@ -1,0 +1,29 @@
+.container {
+    width: 100%;
+    display: flex;
+}
+
+.editor-container {
+    height: 100%;
+
+    :global {
+        .monaco-editor {
+            border-top-right-radius: 30px !important;
+            border-bottom-right-radius: 30px !important;
+
+            .overflow-guard {
+                border-radius: 30px;
+            }
+
+            .margin-view-overlays .line-numbers {
+                user-select: none;
+                -moz-user-select: none;
+                -webkit-user-select: none;
+            }
+
+            .parameter-hints-widget > .wrapper {
+                min-height: auto !important;
+            }
+        }
+    }
+}
