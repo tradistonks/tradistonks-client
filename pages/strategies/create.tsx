@@ -1,47 +1,54 @@
-import { Input, Select } from 'antd';
+import { Button, Input, Select } from 'antd';
 import { GetServerSideProps } from 'next';
-import React from 'react';
+import React, { useState } from 'react';
+import Editor, {
+  EditorOnChange,
+  setFileCode,
+} from '../../components/atoms/Editor/Editor';
+import { EditorFileExplorerItem } from '../../components/atoms/Editor/EditorFileExplorer';
 import Form from '../../components/atoms/Form/Form';
 import FormItem from '../../components/atoms/FormItem/FormItem';
 import Page from '../../components/templates/Page/Page';
-import { hasErrorProps, MaybeErrorProps } from '../../utils/maybe-error-props';
+import { ApiError } from '../../utils/api-error';
 import { ServerSideAPI } from '../../utils/api.server';
 import { LanguageDTO } from '../../utils/dto/language.dto';
-import Error from 'next/error';
-import { ApiError } from '../../utils/api-error';
+import { MaybeErrorProps } from '../../utils/maybe-error-props';
+import styles from './create.module.scss';
 
-export const getServerSideProps: GetServerSideProps<CreateStrategyPageProps> =
-  async (context) => {
-    try {
-      const api = new ServerSideAPI(context);
+export const getServerSideProps: GetServerSideProps<
+  MaybeErrorProps<CreateStrategyPageProps>
+> = async (context) => {
+  try {
+    const api = new ServerSideAPI(context);
 
-      return {
-        props: {
-          languages: await api.getLanguages(),
-        },
-      };
-    } catch (error) {
-      return {
-        props: {
-          error: (error instanceof ApiError
-            ? error
-            : new ApiError(500, 'Unexpected error')
-          ).toObject(),
-        },
-      };
-    }
-  };
+    return {
+      props: {
+        languages: await api.getLanguages(),
+      },
+    };
+  } catch (error) {
+    return {
+      props: {
+        error: (error instanceof ApiError
+          ? error
+          : new ApiError(500, 'Unexpected error')
+        ).toObject(),
+      },
+    };
+  }
+};
 
-type CreateStrategyPageProps = MaybeErrorProps<{
+type CreateStrategyPageProps = {
   languages: Pick<LanguageDTO, '_id' | 'name'>[];
-}>;
+};
 
 export default function CreateStrategyPage(props: CreateStrategyPageProps) {
-  if (hasErrorProps(props)) {
-    return (
-      <Error statusCode={props.error.status} title={props.error.message} />
-    );
-  }
+  const [files, setFiles] = useState<EditorFileExplorerItem[]>([]);
+
+  const onEditorChange: EditorOnChange = (path, content) => {
+    // eslint-disable-next-line @typescript-eslint/no-shadow
+    setFiles((files) => setFileCode(files, path, content));
+  };
 
   return (
     <Page title="Strategies" subTitle="Create a strategy">
@@ -75,6 +82,17 @@ export default function CreateStrategyPage(props: CreateStrategyPageProps) {
               </Select.Option>
             ))}
           </Select>
+        </FormItem>
+        <FormItem wrapperCol={{ span: 24 }}>
+          <Editor files={files} height="800px" onChange={onEditorChange} />
+        </FormItem>
+        <FormItem
+          wrapperCol={{ span: 24 }}
+          className={styles['submit-button-wrapper']}
+        >
+          <Button type="primary" htmlType="submit">
+            Submit
+          </Button>
         </FormItem>
       </Form>
     </Page>
