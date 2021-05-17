@@ -37,31 +37,29 @@ export default function Register() {
   };
   return (
     <Page title="Register" subTitle="Create a new account">
-    <Form
-      onFinish={onRegister}
-    >
-      <FormItem name="email" label="Email" rules={[{ required: true }]}>
-        <Input />
-      </FormItem>
-      <FormItem name="username" label="Username" rules={[{ required: true }]}>
-        <Input />
-      </FormItem>
-      <FormItem name="password" label="Password" rules={[{ required: true }]}>
-        <Input type="password" />
-      </FormItem>
-      <FormItem
-        name="passwordConfirmation"
-        label="Confirmed Password"
-        rules={[{ required: true }]}
-      >
-        <Input type="password" />
-      </FormItem>
-      <FormItem>
-        <Button type="primary" htmlType="submit">
-          Register
-        </Button>
-      </FormItem>
-    </Form>
+      <Form onFinish={onRegister}>
+        <FormItem name="email" label="Email" rules={[{ required: true }]}>
+          <Input />
+        </FormItem>
+        <FormItem name="username" label="Username" rules={[{ required: true }]}>
+          <Input />
+        </FormItem>
+        <FormItem name="password" label="Password" rules={[{ required: true }]}>
+          <Input type="password" />
+        </FormItem>
+        <FormItem
+          name="passwordConfirmation"
+          label="Confirmed Password"
+          rules={[{ required: true }]}
+        >
+          <Input type="password" />
+        </FormItem>
+        <FormItem>
+          <Button type="primary" htmlType="submit">
+            Register
+          </Button>
+        </FormItem>
+      </Form>
     </Page>
   );
 }

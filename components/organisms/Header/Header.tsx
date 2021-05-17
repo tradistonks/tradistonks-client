@@ -1,4 +1,4 @@
-import { Layout, Menu , } from 'antd';
+import { Layout, Menu } from 'antd';
 import Link from 'next/link';
 import React from 'react';
 
@@ -8,10 +8,10 @@ export default function Header() {
   return (
     <AntdHeader>
       <Menu theme="dark" mode="horizontal">
-      <Menu.Item key="nav-home">
-        <Link href="/">
-          <a>Home</a>
-        </Link>
+        <Menu.Item key="nav-home">
+          <Link href="/">
+            <a>Home</a>
+          </Link>
         </Menu.Item>
         <Menu.Item key="nav-languages">
           <Link href="/languages">

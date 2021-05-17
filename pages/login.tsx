@@ -33,18 +33,18 @@ export default function Login() {
       <Form onFinish={onLogin}>
         <FormItem name="email" label="Email" rules={[{ required: true }]}>
           <Input />
-          </FormItem>
+        </FormItem>
         <FormItem name="password" label="Password" rules={[{ required: true }]}>
           <Input type="password" />
-          </FormItem>
+        </FormItem>
         <FormItem>
           <Button type="primary" htmlType="submit">
             Login
           </Button>
-          </FormItem>
-          <Link href="/register">
-            <a>Create a new account</a>
-          </Link>
+        </FormItem>
+        <Link href="/register">
+          <a>Create a new account</a>
+        </Link>
       </Form>
     </Page>
   );
