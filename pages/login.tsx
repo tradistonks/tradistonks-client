@@ -1,51 +1,25 @@
-import { Button, Input, notification } from 'antd';
+import { Button } from 'antd';
 import React from 'react';
-import * as api from '../utils/api';
-import Form from '../components/atoms/Form/Form';
-import FormItem from '../components/atoms/FormItem/FormItem';
 import Page from '../components/templates/Page/Page';
-import Link from 'next/link';
+import getConfig from 'next/config';
 
-export default function Login() {
-  type LoginFormData = {
-    email: string;
-    password: string;
-  };
+const {
+  publicRuntimeConfig: {
+    OAUTH2_LOCAL_URL,
+    OAUTH2_LOCAL_CLIENT_ID,
+    OAUTH2_LOCAL_REDIRECT_URL,
+    OAUTH2_PKCE_STATE,
+  },
+} = getConfig();
 
-  const onLogin = async ({ email, password }: LoginFormData) => {
-    const { data, error } = await api.client.login(email, password);
-
-    if (error) {
-      notification.error({
-        message: 'Failed to login',
-        description: error,
-      });
-    } else {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const { access_token } = data!;
-
-      console.log(access_token);
-    }
-  };
-
+export default function LoginPage() {
   return (
-    <Page title="Login" subTitle="Connect to your account">
-      <Form onFinish={onLogin}>
-        <FormItem name="email" label="Email" rules={[{ required: true }]}>
-          <Input />
-        </FormItem>
-        <FormItem name="password" label="Password" rules={[{ required: true }]}>
-          <Input type="password" />
-        </FormItem>
-        <FormItem>
-          <Button type="primary" htmlType="submit">
-            Login
-          </Button>
-        </FormItem>
-        <Link href="/register">
-          <a>Create a new account</a>
-        </Link>
-      </Form>
+    <Page title="Login" subTitle="">
+      <Button
+        href={`${OAUTH2_LOCAL_URL}?client_id=${OAUTH2_LOCAL_CLIENT_ID}&redirect_uri=${OAUTH2_LOCAL_REDIRECT_URL}&response_type=code&state=${OAUTH2_PKCE_STATE}&scope=identify+offline`}
+      >
+        Login using email and password
+      </Button>
     </Page>
   );
 }

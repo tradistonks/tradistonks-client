@@ -1,3 +1,3 @@
 export class LoginResponseDTO {
-  access_token!: string;
+  redirect_to!: string;
 }

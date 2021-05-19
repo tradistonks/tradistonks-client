@@ -3,9 +3,9 @@ import { GetServerSidePropsContext } from 'next';
 import getConfig from 'next/config';
 import queryString from 'query-string';
 import { ParsedUrlQuery } from 'querystring';
-import { LanguageDTO } from './dto/language.dto';
-import { AuthRefreshDTO } from './dto/auth-refresh.dto';
 import { ApiError } from './api-error';
+import { AuthCallbackDTO } from './dto/auth-callback.dto';
+import { LanguageDTO } from './dto/language.dto';
 
 const {
   serverRuntimeConfig: { API_INTERNAL_HOST },
@@ -21,8 +21,13 @@ type RequestOptions = {
 export class ServerSideAPI {
   constructor(private context: GetServerSidePropsContext<ParsedUrlQuery>) {}
 
-  async authenticate() {
-    return await this.request<AuthRefreshDTO>('GET', '/languages');
+  async authLocalCallback(code: string, state: string) {
+    return await this.request<AuthCallbackDTO>('POST', '/auth/callback/local', {
+      queries: {
+        code,
+        state,
+      },
+    });
   }
 
   async getLanguages() {
@@ -33,7 +38,7 @@ export class ServerSideAPI {
     );
   }
 
-  private appendSetCookieHeader(setCookie: string) {
+  private appendSetCookieHeader(setCookie: string | string[]) {
     const currentSetCookie = this.context.res.getHeader('set-cookie');
     const currentSetCookieAsArray = !currentSetCookie
       ? []
@@ -41,14 +46,19 @@ export class ServerSideAPI {
       ? currentSetCookie.toString()
       : [currentSetCookie.toString()];
 
+    const setCookies = Array.isArray(setCookie) ? setCookie : [setCookie];
+
     this.context.res.setHeader('set-cookie', [
       ...currentSetCookieAsArray,
-      setCookie,
+      ...setCookies,
     ]);
 
-    const [name, value] = setCookie.split('=');
+    for (const cookie of setCookies) {
+      const [name, data] = cookie.split('=');
+      const [value] = data.split(';');
 
-    this.context.req.cookies[name] = value;
+      this.context.req.cookies[name] = value;
+    }
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

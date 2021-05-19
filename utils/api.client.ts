@@ -2,6 +2,7 @@ import getConfig from 'next/config';
 import axios, { Method } from 'axios';
 import query_string from 'query-string';
 import { LoginResponseDTO } from '../types/dto/login-response.dto';
+import { ConsentResponseDTO } from '../types/dto/consent-response.dto';
 
 const {
   publicRuntimeConfig: { API_EXTERNAL_HOST },
@@ -55,11 +56,30 @@ export async function request<T = any>(
   }
 }
 
-export async function login(email: string, password: string) {
+export async function login(
+  email: string,
+  password: string,
+  login_challenge: string,
+) {
   return request<LoginResponseDTO>('POST', '/auth/login', {
     body: {
       email,
       password,
+      login_challenge,
+    },
+  });
+}
+
+export async function consent(
+  email: string,
+  password: string,
+  consent_challenge: string,
+) {
+  return request<ConsentResponseDTO>('POST', '/auth/consent', {
+    body: {
+      email,
+      password,
+      consent_challenge,
     },
   });
 }
