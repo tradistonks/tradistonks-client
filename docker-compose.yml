@@ -12,14 +12,10 @@ services:
       dockerfile: Dockerfile.dev
     volumes:
       - ./components:/usr/src/app/components
-      - ./models:/usr/src/app/models
       - ./pages:/usr/src/app/pages
       - ./public:/usr/src/app/public
-      - ./services:/usr/src/app/services
       - ./styles:/usr/src/app/styles
       - ./utils:/usr/src/app/utils
-      - ./hooks:/usr/src/app/hooks
-      - ./icons:/usr/src/app/icons
     networks:
       - tradistonks-api
     ports:
