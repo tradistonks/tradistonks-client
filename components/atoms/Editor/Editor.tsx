@@ -48,36 +48,48 @@ export const EDITOR_EXTENSION_ASSOCIATION: Record<
   '.cs': {
     language: 'csharp',
   },
-  html: {
+  '.html': {
     language: 'html',
   },
-  css: {
+  '.css': {
     language: 'css',
+  },
+  '.go': {
+    language: 'go',
   },
 };
 
 export function setFileCode(
   files: EditorFileExplorerItem[],
   path: string,
-  content: string,
+  content: string | null,
 ) {
-  const filesCopy = [...files];
-  const file = filesCopy.find((f) => f.path === path) as EditorFileExplorerFile;
+  let filesCopy = [...files];
 
-  if (file) {
-    file.content = content;
+  if (content === null) {
+    filesCopy = filesCopy.filter(
+      (f) => f.path !== path && !f.path.startsWith(`${path}/`),
+    );
   } else {
-    filesCopy.push({
-      path,
-      type: 'file',
-      content,
-    });
+    const file = filesCopy.find(
+      (f) => f.path === path,
+    ) as EditorFileExplorerFile;
+
+    if (file) {
+      file.content = content;
+    } else {
+      filesCopy.push({
+        path,
+        type: 'file',
+        content,
+      });
+    }
   }
 
   return filesCopy;
 }
 
-export type EditorOnChange = (path: string, content: string) => void;
+export type EditorOnChange = (path: string, content: string | null) => void;
 
 export default function Editor(
   props: PropsWithChildren<{
@@ -92,16 +104,14 @@ export default function Editor(
     onMount?: OnMount;
   }>,
 ) {
-  const [fileExplorerWidth] = useState(200);
+  const [fileExplorerWidth] = useState(300);
   const [currentPath, setCurrentPath] = useState(
     props.defaultCurrentPath ?? '',
   );
 
   const onFileSelect = (path: string) => {
-    if (props.files.find((file) => file.path === path)?.type === 'file') {
-      setCurrentPath(path);
-      props.onSelect?.(path);
-    }
+    setCurrentPath(path);
+    props.onSelect?.(path);
   };
 
   const onChange: OnChange = (value) => {
@@ -110,6 +120,10 @@ export default function Editor(
 
   const onCreate = (path: string, value: string) => {
     props.onChange?.(path, value);
+  };
+
+  const onRemove = (path: string) => {
+    props.onChange?.(path, null);
   };
 
   const getFileLanguage = (path: string) => {
@@ -139,8 +153,10 @@ export default function Editor(
       <EditorFileExplorer
         width={fileExplorerWidth}
         files={props.files}
+        currentPath={currentPath}
         onSelect={onFileSelect}
         onCreate={onCreate}
+        onRemove={onRemove}
       />
       <div
         className={styles['editor-container']}
