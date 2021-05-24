@@ -1,30 +1,30 @@
 .file-explorer {
-    height: 100%;
-    background-color: #252526;
-    border-top-left-radius: 30px;
-    border-bottom-left-radius: 30px;
+  height: 100%;
+  background-color: #252526;
+  border-top-left-radius: 30px;
+  border-bottom-left-radius: 30px;
 
-    :global {
-        .ant-tree {
-            background: none;
-            color: rgba(255, 255, 255, 0.8);
+  :global {
+    .ant-tree {
+      background: none;
+      color: rgba(255, 255, 255, 0.8);
 
-            .ant-tree-treenode {
-                padding: 0;
+      .ant-tree-treenode {
+        padding: 0;
 
-                &::before {
-                    bottom: 0px;
-                    transition: background-color 0.1s;
-                }
-
-                &:hover::before {
-                    background-color: #2a2d2e;
-                }
-
-                &.ant-tree-treenode-selected::before {
-                    background-color: #37373d;
-                }
-            }
+        &::before {
+          bottom: 0px;
+          transition: background-color 0.1s;
         }
+
+        &:hover::before {
+          background-color: #2a2d2e;
+        }
+
+        &.ant-tree-treenode-selected::before {
+          background-color: #37373d;
+        }
+      }
     }
+  }
 }

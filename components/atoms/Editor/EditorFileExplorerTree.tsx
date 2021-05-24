@@ -1,6 +1,8 @@
 import React, { PropsWithChildren } from 'react';
-import { C, Cpp, Go2, Python, TypeScript } from 'seti-icons-react';
+import { C, Cpp, Go2, JavaScript, Python, TypeScript } from 'seti-icons-react';
 import styles from './EditorFileExplorerTree.module.scss';
+import { DefaultFolderOpened } from './icons/DefaultFolderOpened';
+import { DeleteSign } from './icons/DeleteSign';
 
 export interface TreeNodeDirectory {
   type: 'directory';
@@ -21,10 +23,15 @@ function getChildrenNodes(node: TreeNode) {
 }
 
 type FileIconProps = {
+  isFolder: boolean;
   filename: string;
 };
 
 function FileIcon(props: FileIconProps) {
+  if (props.isFolder) {
+    return <DefaultFolderOpened />;
+  }
+
   const map = {
     '.c': <C theme="extension/.c" />,
     '.h': <C theme="extension/.h" />,
@@ -42,6 +49,9 @@ function FileIcon(props: FileIconProps) {
     'spec.ts': <TypeScript theme="extension/.spec.ts" />,
     'test.ts': <TypeScript theme="extension/.test.ts" />,
     '.ts': <TypeScript theme="extension/.ts" />,
+    'spec.js': <JavaScript theme="extension/.spec.js" />,
+    'test.js': <JavaScript theme="extension/.test.js" />,
+    '.js': <JavaScript theme="extension/.js" />,
     '.py': <Python theme="extension/.py" />,
   };
 
@@ -55,8 +65,10 @@ function FileIcon(props: FileIconProps) {
 export function EditorFileExplorerTree(
   props: PropsWithChildren<{
     nodes: TreeNode[];
+    currentPath?: string;
     depth?: number;
-    onSelect: (key: string) => void;
+    onSelect: (path: string) => void;
+    onRemove: (path: string) => void;
   }>,
 ) {
   const getDepth = () => props.depth ?? 0;
@@ -66,19 +78,35 @@ export function EditorFileExplorerTree(
       {props.nodes.map((node) => (
         <React.Fragment key={node.key}>
           <div
-            className={styles['node']}
+            className={
+              styles['node'] +
+              (props.currentPath === node.key ? ` ${styles['active']}` : '')
+            }
             style={{
               paddingLeft: `${getDepth() * 24}px`,
             }}
-            onClick={() => props.onSelect(node.key)}
+            onClick={() => node.type === 'file' && props.onSelect(node.key)}
           >
-            <FileIcon filename={node.key} />
+            <FileIcon
+              isFolder={node.type === 'directory'}
+              filename={node.key}
+            />
             <span>{node.title}</span>
+            <DeleteSign
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+
+                props.onRemove?.(node.key);
+              }}
+            />
           </div>
           <EditorFileExplorerTree
-            depth={getDepth() + 1}
             nodes={getChildrenNodes(node)}
+            currentPath={props.currentPath}
+            depth={getDepth() + 1}
             onSelect={props.onSelect}
+            onRemove={props.onRemove}
           />
         </React.Fragment>
       ))}

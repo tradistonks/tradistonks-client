@@ -21,17 +21,18 @@ export type EditorFileExplorerItem =
 export default function EditorFileExplorer(
   props: PropsWithChildren<{
     files: EditorFileExplorerItem[];
+    currentPath?: string;
     width: string | number;
     onSelect?: (path: string) => void;
+    onRemove: (path: string) => void;
     onCreate: (path: string, value: string) => void;
   }>,
 ) {
-  const [fileSearch, setFileSearch] = useState('');
   const [fileName, setFileName] = useState('');
 
   const transformToObjectTree = (
     files: EditorFileExplorerItem[],
-    search: string,
+    search = '',
   ) => {
     const nodes: TreeNode[] = [];
 
@@ -79,7 +80,12 @@ export default function EditorFileExplorer(
   };
 
   const onCreate = (value = '') => {
+    if (!fileName) return;
+
     props.onCreate(fileName, value);
+    props.onSelect?.(fileName);
+
+    setFileName('');
   };
 
   return (
@@ -89,13 +95,6 @@ export default function EditorFileExplorer(
         width: props.width,
       }}
     >
-      <Input
-        placeholder="Search"
-        prefix={<React.Fragment />}
-        className={styles['search']}
-        value={fileSearch}
-        onChange={(e) => setFileSearch(e.target.value)}
-      />
       <Row
         justify="space-between"
         align="middle"
@@ -104,10 +103,17 @@ export default function EditorFileExplorer(
         <Col flex="1">
           <Input
             placeholder="Filename"
-            prefix={<React.Fragment />}
             className={styles['filename']}
             value={fileName}
             onChange={(e) => setFileName(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                e.preventDefault();
+                e.stopPropagation();
+
+                onCreate();
+              }
+            }}
           ></Input>
         </Col>
         <Col>
@@ -117,21 +123,11 @@ export default function EditorFileExplorer(
         </Col>
       </Row>
       <EditorFileExplorerTree
-        nodes={transformToObjectTree(props.files, fileSearch.toLowerCase())}
-        onSelect={(path) => props?.onSelect?.(path)}
+        nodes={transformToObjectTree(props.files)}
+        currentPath={props.currentPath}
+        onSelect={(path) => props.onSelect?.(path)}
+        onRemove={(path) => props.onRemove?.(path)}
       />
-      {/* <Tree.DirectoryTree
-        // defaultExpandedKeys={this.state.expandedKeys}
-        // draggable
-        multiple
-        blockNode
-        // onDragEnter={this.onDragEnter}
-        // onDrop={this.onDrop}
-        treeData={transformToObjectTree(props.files, fileSearch.toLowerCase())}
-        onSelect={(selectedKeys, info) => {
-          props.onSelect?.(info.node.key as string);
-        }}
-      /> */}
     </div>
   );
 }
