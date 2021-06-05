@@ -83,7 +83,7 @@ export default function OAuth2LoginPage(props: OAuth2LoginPageProps) {
             Login
           </Button>
         </FormItem>
-        <Link href="/register">
+        <Link as="register" href="../register">
           <a>Create a new account</a>
         </Link>
       </Form>

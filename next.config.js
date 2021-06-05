@@ -1,4 +1,10 @@
-module.exports = {
+
+const withLess = require("next-with-less");
+const path = require("path");
+
+const pathToLessFileWithVariables = path.resolve("styles/antd-variables.less")
+
+module.exports = withLess({
   serverRuntimeConfig: {
     API_INTERNAL_HOST: process.env.API_INTERNAL_HOST,
   },
@@ -13,4 +19,4 @@ module.exports = {
   future: {
     webpack5: true,
   },
-};
+});

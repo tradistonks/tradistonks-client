@@ -5,6 +5,8 @@ import Content from '../../organisms/Content/Content';
 import Header from '../../organisms/Header/Header';
 import styles from './Page.module.scss';
 
+import MenuSider from '../../organisms/Header/Menu';
+
 export type PageProps = PropsWithChildren<{
   title: string;
   subTitle: string;
@@ -13,15 +15,16 @@ export type PageProps = PropsWithChildren<{
 export default function Page(props: PageProps) {
   return (
     <Layout className={styles['layout']}>
-      <Head>
-        <title>{props.title}</title>
-      </Head>
-
       <Header />
-
-      <Content title={props.title} subTitle={props.subTitle}>
-        {props.children}
-      </Content>
+      <Layout>
+        <MenuSider/>
+        <Head>
+          <title>{props.title}</title>
+        </Head>
+        <Content title={props.title} subTitle={props.subTitle}>
+          {props.children}
+        </Content>
+      </Layout>
     </Layout>
   );
 }

@@ -19,11 +19,14 @@ export default function Content(props: ContentProps) {
       <PageHeader
         ghost={false}
         onBack={props.onBack ?? (() => window.history.back())}
-        title={props.title}
-        subTitle={props.subTitle}
         extra={props.extra}
+        style={{ backgroundColor: '#1e2633' }}
       >
-        {props.children}
+        <div className={styles['title']}>
+          <h1>{props.title}</h1>
+          <h2>{props.subTitle}</h2>
+          {props.children}
+        </div>
       </PageHeader>
     </AntdContent>
   );

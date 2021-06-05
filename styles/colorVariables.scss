@@ -1,0 +1,22 @@
+$color-background: #1e2633;
+$color-font: #242d3e;
+$color-purple: #7866ed;
+$color-pink: #d45a89;
+$color-yellow: #dbc664;
+$color-green: #2ba74f;
+$color-lightBlue: #71aabb;
+$color-blue: #11a7a6;
+$text-color: #ffffff;
+
+
+:export {
+    colorBackgroung: $color-background;
+    colorFont: $color-font;
+    colorPurple: $color-purple;
+    colorPink: $color-pink;
+    colorYellow: $color-yellow;
+    colorGreen: $color-green;
+    colorLightBlue: $color-lightBlue;
+    colorBlue: $color-blue;
+    textColor: $text-color;
+  }

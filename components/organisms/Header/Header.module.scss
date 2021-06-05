@@ -1,0 +1,13 @@
+@import '../../../styles/globals.scss';
+
+.header-wrapper {
+  background-color: $color-font;
+}
+
+.ant-menu:not(.ant-menu-horizontal) .ant-menu-item-selected {
+	background: $color-background;
+}
+
+.ant-menu{
+  background: $color-font;
+}

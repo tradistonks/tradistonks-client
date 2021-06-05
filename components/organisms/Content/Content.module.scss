@@ -1,4 +1,22 @@
+@import '../../../styles/globals.scss';
+
 .content-wrapper {
   padding: 24px;
-  background-color: #f5f5f5;
+  background-color: $color-background;
+  color: $text-color;
+}
+
+.content{
+  background-color: $color-background;
+  color: $text-color;
+}
+
+.title h1{
+  color: $text-color;
+  size: 24;
+}
+
+.title h2{
+  color: $text-color;
+  size: 14;
 }

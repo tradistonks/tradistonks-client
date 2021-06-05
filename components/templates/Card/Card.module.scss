@@ -1,0 +1,17 @@
+@import '../../../styles/globals.scss';
+
+.card{
+  background-color: $color-font;
+  border: none;
+  color: $text-color;
+  border-radius: '25px';
+  padding: '4px';
+  display: flex;  
+  flex-wrap: wrap;
+}
+
+.title h2{
+  background-color: $color-font;
+  border: none;
+  color: $text-color;
+}

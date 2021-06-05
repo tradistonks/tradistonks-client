@@ -1,34 +1,26 @@
 import { Layout, Menu } from 'antd';
+
+const { Header } = Layout;
 import Link from 'next/link';
 import React from 'react';
+import styles from './Header.module.scss';
+import '../../../styles/antd-variables.less';
 
-const { Header: AntdHeader } = Layout;
-
-export default function Header() {
+export default function HeaderMenu() {
   return (
-    <AntdHeader>
+    <Header className={styles['header-wrapper']}>
       <Menu theme="dark" mode="horizontal">
         <Menu.Item key="nav-home">
-          <Link href="/">
-            <a>Home</a>
+          <Link href="/" replace={true}>
+            <span>Home</span>
           </Link>
         </Menu.Item>
-        <Menu.Item key="nav-languages">
-          <Link href="/languages">
-            <a>Languages</a>
-          </Link>
-        </Menu.Item>
-        <Menu.Item key="nav-strategies">
-          <Link href="/strategies">
-            <a>Strategies</a>
-          </Link>
-        </Menu.Item>
-        <Menu.Item key="login">
-          <Link href="/login">
-            <a>Login</a>
+        <Menu.Item key="Login">
+          <Link as="login" href="login" replace={true}>
+            <span>Login</span>
           </Link>
         </Menu.Item>
       </Menu>
-    </AntdHeader>
+    </Header>
   );
 }
