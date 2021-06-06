@@ -1,14 +1,13 @@
-import { Button, Input, Select } from 'antd';
+import { Button, Input, notification, Select } from 'antd';
 import { GetServerSideProps } from 'next';
-import React, { useState } from 'react';
-import Editor, {
-  EditorOnChange,
-  setFileCode,
-} from '../../components/atoms/Editor/Editor';
-import { EditorFileExplorerItem } from '../../components/atoms/Editor/EditorFileExplorer';
+import Router from 'next/router';
+import React from 'react';
+import { FormEditor } from '../../components/atoms/Editor/Editor';
 import Form from '../../components/atoms/Form/Form';
 import FormItem from '../../components/atoms/FormItem/FormItem';
 import Page from '../../components/templates/Page/Page';
+import { StrategyDTO } from '../../types/dto/strategy.dto';
+import * as api from '../../utils/api';
 import { ApiError } from '../../utils/api-error';
 import { ServerSideAPI } from '../../utils/api.server';
 import { LanguageDTO } from '../../utils/dto/language.dto';
@@ -19,11 +18,11 @@ export const getServerSideProps: GetServerSideProps<
   MaybeErrorProps<CreateStrategyPageProps>
 > = async (context) => {
   try {
-    const api = new ServerSideAPI(context);
+    const server_api = new ServerSideAPI(context);
 
     return {
       props: {
-        languages: await api.getLanguages(),
+        languages: await server_api.getLanguages(),
       },
     };
   } catch (error) {
@@ -43,16 +42,23 @@ type CreateStrategyPageProps = {
 };
 
 export default function CreateStrategyPage(props: CreateStrategyPageProps) {
-  const [files, setFiles] = useState<EditorFileExplorerItem[]>([]);
+  const onCreate = async (strategy: StrategyDTO) => {
+    const { data, error } = await api.client.createStrategy(strategy);
 
-  const onEditorChange: EditorOnChange = (path, content) => {
-    // eslint-disable-next-line @typescript-eslint/no-shadow
-    setFiles((files) => setFileCode(files, path, content));
+    if (error) {
+      notification.error({
+        message: 'Failed to create the strategy',
+        description: error,
+      });
+    } else {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      Router.push(`/strategies/${data!._id}/edit`);
+    }
   };
 
   return (
     <Page title="Strategies" subTitle="Create a strategy">
-      <Form>
+      <Form onFinish={onCreate}>
         <FormItem
           label="Name"
           name="name"
@@ -83,8 +89,8 @@ export default function CreateStrategyPage(props: CreateStrategyPageProps) {
             ))}
           </Select>
         </FormItem>
-        <FormItem wrapperCol={{ span: 24 }}>
-          <Editor files={files} height="800px" onChange={onEditorChange} />
+        <FormItem name="files" wrapperCol={{ span: 24 }}>
+          <FormEditor height="800px" />
         </FormItem>
         <FormItem
           wrapperCol={{ span: 24 }}

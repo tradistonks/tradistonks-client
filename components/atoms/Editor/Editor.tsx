@@ -91,19 +91,19 @@ export function setFileCode(
 
 export type EditorOnChange = (path: string, content: string | null) => void;
 
-export default function Editor(
-  props: PropsWithChildren<{
-    files: EditorFileExplorerItem[];
-    defaultCurrentPath?: string;
+export type EditorProps = PropsWithChildren<{
+  files: EditorFileExplorerItem[];
+  defaultCurrentPath?: string;
 
-    height?: string | number;
+  height?: string | number;
 
-    onChange?: EditorOnChange;
-    onSelect?: (path: string) => void;
+  onChange?: EditorOnChange;
+  onSelect?: (path: string) => void;
 
-    onMount?: OnMount;
-  }>,
-) {
+  onMount?: OnMount;
+}>;
+
+export default function Editor(props: EditorProps) {
   const [fileExplorerWidth] = useState(300);
   const [currentPath, setCurrentPath] = useState(
     props.defaultCurrentPath ?? '',
@@ -119,7 +119,7 @@ export default function Editor(
   };
 
   const onCreate = (path: string, value: string) => {
-    props.onChange?.(path, value);
+    props.onChange?.(path.startsWith('/') ? path : `/${path}`, value);
   };
 
   const onRemove = (path: string) => {
@@ -177,5 +177,30 @@ export default function Editor(
         />
       </div>
     </div>
+  );
+}
+
+export type FormEditorProps = Omit<EditorProps, 'onChange' | 'files'> & {
+  defaultFiles?: EditorFileExplorerItem[];
+
+  // Antd handlers
+  id?: string;
+  value?: EditorFileExplorerItem[];
+  onChange?: (values: unknown) => void;
+};
+
+export function FormEditor(props: FormEditorProps) {
+  const onEditorChange: EditorOnChange = (path, content) => {
+    const newFiles = setFileCode(props.value ?? [], path, content);
+
+    if (props.onChange && props.id) {
+      props.onChange(newFiles);
+    }
+
+    return newFiles;
+  };
+
+  return (
+    <Editor {...props} files={props.value ?? []} onChange={onEditorChange} />
   );
 }
