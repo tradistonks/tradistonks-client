@@ -7,6 +7,7 @@ import { StrategyDTO } from '../types/dto/strategy.dto';
 import { ApiError } from './api-error';
 import { AuthCallbackDTO } from './dto/auth-callback.dto';
 import { LanguageDTO } from './dto/language.dto';
+import { UserDTO } from './dto/user.dto';
 
 const {
   serverRuntimeConfig: { API_INTERNAL_HOST },
@@ -35,12 +36,22 @@ export class ServerSideAPI {
     return await this.request<Pick<LanguageDTO, '_id' | 'name'>[]>(
       'GET',
       '/languages',
-      {},
     );
   }
 
-  async getStrategy(id: string) {
-    return await this.request<StrategyDTO>('GET', `/strategies/${id}`, {});
+  async getUser(username: string) {
+    return await this.request<UserDTO>('GET', `/users/${username}`);
+  }
+
+  async getStrategy(strategyId: string) {
+    return await this.request<StrategyDTO>('GET', `/strategies/${strategyId}`);
+  }
+
+  async getUserStrategies(username: string) {
+    return await this.request<StrategyDTO[]>(
+      'GET',
+      `/users/${username}/strategies`,
+    );
   }
 
   private appendSetCookieHeader(setCookie: string | string[]) {

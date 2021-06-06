@@ -19,8 +19,8 @@ export default function Header() {
           </Link>
         </Menu.Item>
         <Menu.Item key="nav-strategies">
-          <Link href="/strategies">
-            <a>Strategies</a>
+          <Link href="/users/me/strategies">
+            <a>My strategies</a>
           </Link>
         </Menu.Item>
         <Menu.Item key="login">
