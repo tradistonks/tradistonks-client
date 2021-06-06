@@ -4,6 +4,7 @@ import query_string from 'query-string';
 import { LoginResponseDTO } from '../types/dto/login-response.dto';
 import { ConsentResponseDTO } from '../types/dto/consent-response.dto';
 import { StrategyDTO } from '../types/dto/strategy.dto';
+import { LanguageDTO } from './dto/language.dto';
 
 const {
   publicRuntimeConfig: { API_EXTERNAL_HOST },
@@ -112,6 +113,21 @@ export async function updateStrategy(
   data: Omit<StrategyDTO, '_id'>,
 ) {
   return request<StrategyDTO>('PUT', `/strategies/${id}`, {
+    body: data,
+  });
+}
+
+export async function createLanguage(data: Omit<LanguageDTO, '_id'>) {
+  return request<LanguageDTO>('POST', '/languages', {
+    body: data,
+  });
+}
+
+export async function updateLanguage(
+  id: string,
+  data: Omit<LanguageDTO, '_id'>,
+) {
+  return request<LanguageDTO>('PUT', `/languages/${id}`, {
     body: data,
   });
 }
