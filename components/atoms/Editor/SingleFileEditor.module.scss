@@ -1,0 +1,10 @@
+@use 'Editor.module.scss';
+
+.editor-container {
+  :global {
+    .monaco-editor {
+      border-top-left-radius: 30px !important;
+      border-bottom-left-radius: 30px !important;
+    }
+  }
+}

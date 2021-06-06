@@ -181,12 +181,10 @@ export default function Editor(props: EditorProps) {
 }
 
 export type FormEditorProps = Omit<EditorProps, 'onChange' | 'files'> & {
-  defaultFiles?: EditorFileExplorerItem[];
-
   // Antd handlers
   id?: string;
   value?: EditorFileExplorerItem[];
-  onChange?: (values: unknown) => void;
+  onChange?: (files: EditorFileExplorerItem[]) => void;
 };
 
 export function FormEditor(props: FormEditorProps) {
@@ -196,8 +194,6 @@ export function FormEditor(props: FormEditorProps) {
     if (props.onChange && props.id) {
       props.onChange(newFiles);
     }
-
-    return newFiles;
   };
 
   return (

@@ -39,6 +39,10 @@ export class ServerSideAPI {
     );
   }
 
+  async getLanguage(languageId: string) {
+    return await this.request<LanguageDTO>('GET', `/languages/${languageId}`);
+  }
+
   async getUser(username: string) {
     return await this.request<UserDTO>('GET', `/users/${username}`);
   }

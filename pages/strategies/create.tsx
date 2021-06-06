@@ -51,6 +51,10 @@ export default function CreateStrategyPage(props: CreateStrategyPageProps) {
         description: error,
       });
     } else {
+      notification.success({
+        message: 'Successfully created the strategy',
+      });
+
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       Router.push(`/strategies/${data!._id}/edit`);
     }
