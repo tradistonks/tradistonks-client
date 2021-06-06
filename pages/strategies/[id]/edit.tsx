@@ -106,7 +106,7 @@ export default function EditStrategyPage(props: EditStrategyPageProps) {
             ))}
           </Select>
         </FormItem>
-        <FormItem name="files" wrapperCol={{ span: 24 }}>
+        <FormItem label="Files" name="files" wrapperCol={{ span: 24 }}>
           <FormEditor height="800px" />
         </FormItem>
         <FormItem
