@@ -44,7 +44,15 @@ type UserStrategiesPageProps = {
 
 export default function UserStrategiesPage(props: UserStrategiesPageProps) {
   return (
-    <Page title="Strategies" subTitle={`${props.user.username}'s strategies`}>
+    <Page
+      title="Strategies"
+      subTitle={props.user.username}
+      extra={
+        <Button type="primary" href="/strategies/create">
+          Create a strategy
+        </Button>
+      }
+    >
       <Table
         columns={[
           {
