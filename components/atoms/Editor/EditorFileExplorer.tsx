@@ -41,7 +41,7 @@ export default function EditorFileExplorer(
         continue;
       }
 
-      const segments = file.path.split('/');
+      const segments = file.path.split('/').filter((v) => v !== '');
 
       let currentPath = '';
       let cursor = nodes;
@@ -50,7 +50,7 @@ export default function EditorFileExplorer(
         const segment = segments[i];
         const node = cursor.find((n) => n.title === segment);
 
-        currentPath += `${currentPath.length > 0 ? '/' : ''}${segment}`;
+        currentPath += `/${segment}`;
 
         if (node && node.type === 'directory') {
           cursor = node.children;

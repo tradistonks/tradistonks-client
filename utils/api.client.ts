@@ -3,6 +3,7 @@ import axios, { Method } from 'axios';
 import query_string from 'query-string';
 import { LoginResponseDTO } from '../types/dto/login-response.dto';
 import { ConsentResponseDTO } from '../types/dto/consent-response.dto';
+import { StrategyDTO } from '../types/dto/strategy.dto';
 
 const {
   publicRuntimeConfig: { API_EXTERNAL_HOST },
@@ -97,5 +98,11 @@ export async function register(
       password,
       password_confirmation,
     },
+  });
+}
+
+export async function createStrategy(data: Omit<StrategyDTO, '_id'>) {
+  return request<StrategyDTO>('POST', '/strategies', {
+    body: data,
   });
 }
