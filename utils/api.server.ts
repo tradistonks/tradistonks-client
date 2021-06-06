@@ -3,6 +3,7 @@ import { GetServerSidePropsContext } from 'next';
 import getConfig from 'next/config';
 import queryString from 'query-string';
 import { ParsedUrlQuery } from 'querystring';
+import { StrategyDTO } from '../types/dto/strategy.dto';
 import { ApiError } from './api-error';
 import { AuthCallbackDTO } from './dto/auth-callback.dto';
 import { LanguageDTO } from './dto/language.dto';
@@ -36,6 +37,10 @@ export class ServerSideAPI {
       '/languages',
       {},
     );
+  }
+
+  async getStrategy(id: string) {
+    return await this.request<StrategyDTO>('GET', `/strategies/${id}`, {});
   }
 
   private appendSetCookieHeader(setCookie: string | string[]) {

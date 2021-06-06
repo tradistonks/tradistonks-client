@@ -106,3 +106,12 @@ export async function createStrategy(data: Omit<StrategyDTO, '_id'>) {
     body: data,
   });
 }
+
+export async function updateStrategy(
+  id: string,
+  data: Omit<StrategyDTO, '_id'>,
+) {
+  return request<StrategyDTO>('PUT', `/strategies/${id}`, {
+    body: data,
+  });
+}

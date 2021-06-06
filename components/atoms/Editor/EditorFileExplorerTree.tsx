@@ -85,7 +85,9 @@ export function EditorFileExplorerTree(
             style={{
               paddingLeft: `${getDepth() * 24}px`,
             }}
-            onClick={() => node.type === 'file' && props.onSelect(node.key)}
+            onClick={() =>
+              node.type !== 'directory' && props.onSelect(node.key)
+            }
           >
             <FileIcon
               isFolder={node.type === 'directory'}

@@ -56,7 +56,7 @@ export default function EditorFileExplorer(
           cursor = node.children;
         } else {
           const type =
-            i === segments.length - 1 && file.type === 'file'
+            i === segments.length - 1 && (!file.type || file.type === 'file')
               ? 'file'
               : 'directory';
 
