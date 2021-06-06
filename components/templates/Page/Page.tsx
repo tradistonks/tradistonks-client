@@ -8,18 +8,30 @@ import styles from './Page.module.scss';
 export type PageProps = PropsWithChildren<{
   title: string;
   subTitle: string;
+
+  extra?: React.ReactNode;
+
+  onBack?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
 }>;
 
 export default function Page(props: PageProps) {
   return (
     <Layout className={styles['layout']}>
       <Head>
-        <title>{props.title}</title>
+        <title>
+          {props.subTitle ? `${props.subTitle} - ` : ''}
+          {props.title}
+        </title>
       </Head>
 
       <Header />
 
-      <Content title={props.title} subTitle={props.subTitle}>
+      <Content
+        title={props.title}
+        subTitle={props.subTitle}
+        extra={props.extra}
+        onBack={props.onBack}
+      >
         {props.children}
       </Content>
     </Layout>
