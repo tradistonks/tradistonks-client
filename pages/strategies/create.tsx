@@ -1,7 +1,7 @@
-import { Button, Input, notification, Select } from 'antd';
+import { Button, Input, notification, Row, Select } from 'antd';
 import { GetServerSideProps } from 'next';
 import Router from 'next/router';
-import React from 'react';
+import React, { useState } from 'react';
 import { FormEditor } from '../../components/atoms/Editor/Editor';
 import Form from '../../components/atoms/Form/Form';
 import FormItem from '../../components/atoms/FormItem/FormItem';
@@ -12,7 +12,6 @@ import { ApiError } from '../../utils/api-error';
 import { ServerSideAPI } from '../../utils/api.server';
 import { LanguageDTO } from '../../utils/dto/language.dto';
 import { MaybeErrorProps } from '../../utils/maybe-error-props';
-import styles from './create.module.scss';
 
 export const getServerSideProps: GetServerSideProps<
   MaybeErrorProps<CreateStrategyPageProps>
@@ -42,8 +41,14 @@ type CreateStrategyPageProps = {
 };
 
 export default function CreateStrategyPage(props: CreateStrategyPageProps) {
+  const [isCreateLoading, setIsCreateLoading] = useState(false);
+
   const onCreate = async (strategy: StrategyDTO) => {
+    setIsCreateLoading(true);
+
     const { data, error } = await api.client.createStrategy(strategy);
+
+    setIsCreateLoading(false);
 
     if (error) {
       notification.error({
@@ -96,14 +101,14 @@ export default function CreateStrategyPage(props: CreateStrategyPageProps) {
         <FormItem label="Files" name="files" wrapperCol={{ span: 24 }}>
           <FormEditor height="800px" />
         </FormItem>
-        <FormItem
-          wrapperCol={{ span: 24 }}
-          className={styles['submit-button-wrapper']}
-        >
-          <Button type="primary" htmlType="submit">
-            Create
-          </Button>
-        </FormItem>
+
+        <Row justify="end">
+          <FormItem>
+            <Button type="primary" loading={isCreateLoading} htmlType="submit">
+              Create
+            </Button>
+          </FormItem>
+        </Row>
       </Form>
     </Page>
   );

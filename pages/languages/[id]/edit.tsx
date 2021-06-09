@@ -1,6 +1,6 @@
-import { Button, Input, notification } from 'antd';
+import { Button, Input, notification, Row } from 'antd';
 import { GetServerSideProps } from 'next';
-import React from 'react';
+import React, { useState } from 'react';
 import { FormEditor } from '../../../components/atoms/Editor/Editor';
 import { SingleFileFormEditor } from '../../../components/atoms/Editor/SingleFileEditor';
 import Form from '../../../components/atoms/Form/Form';
@@ -11,7 +11,6 @@ import { ApiError } from '../../../utils/api-error';
 import { ServerSideAPI } from '../../../utils/api.server';
 import { LanguageDTO } from '../../../utils/dto/language.dto';
 import { MaybeErrorProps } from '../../../utils/maybe-error-props';
-import styles from './edit.module.scss';
 
 export const getServerSideProps: GetServerSideProps<
   MaybeErrorProps<EditLanguagePageProps>
@@ -53,11 +52,17 @@ type EditLanguagePageProps = {
 };
 
 export default function EditLanguagePage(props: EditLanguagePageProps) {
+  const [isUpdateLoading, setIsUpdateLoading] = useState(false);
+
   const onEdit = async (language: Omit<LanguageDTO, '_id'>) => {
+    setIsUpdateLoading(true);
+
     const { error } = await api.client.updateLanguage(
       props.language._id,
       language,
     );
+
+    setIsUpdateLoading(false);
 
     if (error) {
       notification.error({
@@ -112,14 +117,14 @@ export default function EditLanguagePage(props: EditLanguagePageProps) {
         <FormItem label="Files" name="files" wrapperCol={{ span: 24 }}>
           <FormEditor height="800px" />
         </FormItem>
-        <FormItem
-          wrapperCol={{ span: 24 }}
-          className={styles['submit-button-wrapper']}
-        >
-          <Button type="primary" htmlType="submit">
-            Update
-          </Button>
-        </FormItem>
+
+        <Row justify="end">
+          <FormItem>
+            <Button type="primary" loading={isUpdateLoading} htmlType="submit">
+              Update
+            </Button>
+          </FormItem>
+        </Row>
       </Form>
     </Page>
   );
