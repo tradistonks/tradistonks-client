@@ -127,6 +127,10 @@ export abstract class APIBase {
     return await this.request<UserDTO>('GET', `/users/${username}`);
   }
 
+  async getCurrentUser() {
+    return await this.request<UserDTO>('GET', `/users/me`);
+  }
+
   async getUserStrategies(username: string) {
     return await this.request<StrategyDTO[]>(
       'GET',

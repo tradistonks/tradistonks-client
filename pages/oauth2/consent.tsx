@@ -5,14 +5,26 @@ import React from 'react';
 import Form from '../../components/atoms/Form/Form';
 import FormItem from '../../components/atoms/FormItem/FormItem';
 import Page from '../../components/templates/Page/Page';
-import { ApiError } from '../../utils/api-error';
-import { APIExternal } from '../../utils/api';
+import { APIExternal, APIInternal } from '../../utils/api';
 import { MaybeErrorProps } from '../../utils/maybe-error-props';
 
 export const getServerSideProps: GetServerSideProps<
   MaybeErrorProps<OAuth2ConsentPageProps>
 > = async (context) => {
+  const api = new APIInternal(context);
+
   try {
+    const currentUser = await api.getCurrentUser().catch(() => null);
+
+    if (currentUser) {
+      return {
+        redirect: {
+          permanent: false,
+          destination: '/',
+        },
+      };
+    }
+
     const { consent_challenge } = context.query;
 
     if (typeof consent_challenge !== 'string') {
@@ -30,14 +42,7 @@ export const getServerSideProps: GetServerSideProps<
       },
     };
   } catch (error) {
-    return {
-      props: {
-        error: (error instanceof ApiError
-          ? error
-          : new ApiError(500, 'Unexpected error')
-        ).toObject(),
-      },
-    };
+    return api.errorToServerSideProps(error);
   }
 };
 
@@ -67,7 +72,7 @@ export default function OAuth2ConsentPage(props: OAuth2ConsentPageProps) {
   };
 
   return (
-    <Page title="Consent" subTitle="Connect to your account">
+    <Page currentUser={null} title="Consent" subTitle="Connect to your account">
       <Form onFinish={onConsent}>
         <FormItem>
           <Button type="primary" htmlType="submit">

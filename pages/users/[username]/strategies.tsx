@@ -1,7 +1,7 @@
 import { Button, Table } from 'antd';
 import { GetServerSideProps } from 'next';
 import React from 'react';
-import Page from '../../../components/templates/Page/Page';
+import Page, { PagePropsUser } from '../../../components/templates/Page/Page';
 import { StrategyDTO } from '../../../utils/dto/strategy.dto';
 import { APIInternal } from '../../../utils/api';
 import { LanguageDTO } from '../../../utils/dto/language.dto';
@@ -14,11 +14,18 @@ export const getServerSideProps: GetServerSideProps<
   const api = new APIInternal(context);
 
   try {
+    const currentUser = await api.getCurrentUser().catch(() => null);
+
+    if (!currentUser) {
+      return api.createErrorServerSideProps(401, 'Unauthorize');
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const username = context.params!.username as string;
 
     return {
       props: {
+        currentUser,
         languages: await api.getLanguages(),
         user: await api.getUser(username),
         strategies: await api.getUserStrategies(username),
@@ -29,7 +36,7 @@ export const getServerSideProps: GetServerSideProps<
   }
 };
 
-type UserStrategiesPageProps = {
+type UserStrategiesPageProps = PagePropsUser & {
   languages: Pick<LanguageDTO, '_id' | 'name'>[];
   user: UserDTO;
   strategies: StrategyDTO[];
@@ -38,6 +45,7 @@ type UserStrategiesPageProps = {
 export default function UserStrategiesPage(props: UserStrategiesPageProps) {
   return (
     <Page
+      currentUser={props.currentUser}
       title="Strategies"
       subTitle={props.user.username}
       extra={

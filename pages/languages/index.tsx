@@ -1,7 +1,7 @@
 import { Button, Table } from 'antd';
 import { GetServerSideProps } from 'next';
 import React from 'react';
-import Page from '../../components/templates/Page/Page';
+import Page, { PagePropsUser } from '../../components/templates/Page/Page';
 import { APIInternal } from '../../utils/api';
 import { LanguageDTO } from '../../utils/dto/language.dto';
 import { MaybeErrorProps } from '../../utils/maybe-error-props';
@@ -12,8 +12,15 @@ export const getServerSideProps: GetServerSideProps<
   const api = new APIInternal(context);
 
   try {
+    const currentUser = await api.getCurrentUser().catch(() => null);
+
+    if (!currentUser) {
+      return api.createErrorServerSideProps(401, 'Unauthorize');
+    }
+
     return {
       props: {
+        currentUser,
         languages: await api.getLanguages(),
       },
     };
@@ -22,13 +29,14 @@ export const getServerSideProps: GetServerSideProps<
   }
 };
 
-type LanguagesPageProps = {
+type LanguagesPageProps = PagePropsUser & {
   languages: Pick<LanguageDTO, '_id' | 'name'>[];
 };
 
 export default function LanguagesPage(props: LanguagesPageProps) {
   return (
     <Page
+      currentUser={props.currentUser}
       title="Languages"
       subTitle=""
       extra={

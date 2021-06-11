@@ -5,7 +5,7 @@ import { FormEditor } from '../../../components/atoms/Editor/Editor';
 import { SingleFileFormEditor } from '../../../components/atoms/Editor/SingleFileEditor';
 import Form from '../../../components/atoms/Form/Form';
 import FormItem from '../../../components/atoms/FormItem/FormItem';
-import Page from '../../../components/templates/Page/Page';
+import Page, { PagePropsUser } from '../../../components/templates/Page/Page';
 import { APIExternal, APIInternal } from '../../../utils/api';
 import { LanguageDTO } from '../../../utils/dto/language.dto';
 import { MaybeErrorProps } from '../../../utils/maybe-error-props';
@@ -16,9 +16,14 @@ export const getServerSideProps: GetServerSideProps<
   const api = new APIInternal(context);
 
   try {
+    const currentUser = await api.getCurrentUser().catch(() => null);
+
+    if (!currentUser) {
+      return api.createErrorServerSideProps(401, 'Unauthorize');
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const languageId = context.params!.id as string;
-
     const language = await api.getLanguage(languageId);
 
     if (!language) {
@@ -30,6 +35,7 @@ export const getServerSideProps: GetServerSideProps<
 
     return {
       props: {
+        currentUser,
         language,
       },
     };
@@ -38,7 +44,7 @@ export const getServerSideProps: GetServerSideProps<
   }
 };
 
-type EditLanguagePageProps = {
+type EditLanguagePageProps = PagePropsUser & {
   language: LanguageDTO;
 };
 
@@ -67,7 +73,11 @@ export default function EditLanguagePage(props: EditLanguagePageProps) {
   };
 
   return (
-    <Page title="Languages" subTitle="Edit a language">
+    <Page
+      currentUser={props.currentUser}
+      title="Languages"
+      subTitle="Edit a language"
+    >
       <Form onFinish={onEdit} initialValues={props.language}>
         <FormItem
           label="Name"

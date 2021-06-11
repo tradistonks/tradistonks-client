@@ -6,12 +6,14 @@ import React from 'react';
 import Form from '../../components/atoms/Form/Form';
 import FormItem from '../../components/atoms/FormItem/FormItem';
 import Page from '../../components/templates/Page/Page';
-import { APIExternal } from '../../utils/api';
+import { APIExternal, APIInternal } from '../../utils/api';
 import { MaybeErrorProps } from '../../utils/maybe-error-props';
 
 export const getServerSideProps: GetServerSideProps<
   MaybeErrorProps<OAuth2LoginPageProps>
 > = async (context) => {
+  const api = new APIInternal(context);
+
   const { login_challenge } = context.query;
 
   if (typeof login_challenge !== 'string') {
@@ -23,11 +25,26 @@ export const getServerSideProps: GetServerSideProps<
     };
   }
 
-  return {
-    props: {
-      login_challenge,
-    },
-  };
+  try {
+    const currentUser = await api.getCurrentUser().catch(() => null);
+
+    if (currentUser) {
+      return {
+        redirect: {
+          permanent: false,
+          destination: '/',
+        },
+      };
+    }
+
+    return {
+      props: {
+        login_challenge,
+      },
+    };
+  } catch (error) {
+    return api.errorToServerSideProps(error);
+  }
 };
 
 type OAuth2LoginPageProps = {
@@ -56,7 +73,7 @@ export default function OAuth2LoginPage(props: OAuth2LoginPageProps) {
   };
 
   return (
-    <Page title="Login" subTitle="Connect to your account">
+    <Page currentUser={null} title="Login" subTitle="Connect to your account">
       <Form onFinish={onLogin}>
         <FormItem name="email" label="Email" rules={[{ required: true }]}>
           <Input />

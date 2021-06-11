@@ -18,6 +18,17 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const api = new APIInternal(context);
 
   try {
+    const currentUser = await api.getCurrentUser().catch(() => null);
+
+    if (currentUser) {
+      return {
+        redirect: {
+          permanent: false,
+          destination: '/',
+        },
+      };
+    }
+
     await api.authLocalCallback(code, state);
 
     return {
@@ -37,5 +48,5 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 };
 
 export default function OAuth2CallbackPage() {
-  return <Page title="Login callback" subTitle=""></Page>;
+  return <Page currentUser={null} title="Login callback" subTitle=""></Page>;
 }

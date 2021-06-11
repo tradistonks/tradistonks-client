@@ -5,7 +5,7 @@ import React, { useState } from 'react';
 import { FormEditor } from '../../components/atoms/Editor/Editor';
 import Form from '../../components/atoms/Form/Form';
 import FormItem from '../../components/atoms/FormItem/FormItem';
-import Page from '../../components/templates/Page/Page';
+import Page, { PagePropsUser } from '../../components/templates/Page/Page';
 import { StrategyDTO } from '../../utils/dto/strategy.dto';
 import { APIExternal, APIInternal } from '../../utils/api';
 import { LanguageDTO } from '../../utils/dto/language.dto';
@@ -17,8 +17,15 @@ export const getServerSideProps: GetServerSideProps<
   const api = new APIInternal(context);
 
   try {
+    const currentUser = await api.getCurrentUser().catch(() => null);
+
+    if (!currentUser) {
+      return api.createErrorServerSideProps(401, 'Unauthorize');
+    }
+
     return {
       props: {
+        currentUser,
         languages: await api.getLanguages(),
       },
     };
@@ -27,7 +34,7 @@ export const getServerSideProps: GetServerSideProps<
   }
 };
 
-type CreateStrategyPageProps = {
+type CreateStrategyPageProps = PagePropsUser & {
   languages: Pick<LanguageDTO, '_id' | 'name'>[];
 };
 
@@ -58,7 +65,11 @@ export default function CreateStrategyPage(props: CreateStrategyPageProps) {
   };
 
   return (
-    <Page title="Strategies" subTitle="Create a strategy">
+    <Page
+      currentUser={props.currentUser}
+      title="Strategies"
+      subTitle="Create a strategy"
+    >
       <Form onFinish={onCreate}>
         <FormItem
           label="Name"

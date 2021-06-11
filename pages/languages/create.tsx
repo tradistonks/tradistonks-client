@@ -1,15 +1,41 @@
 import { Button, Input, notification, Row } from 'antd';
+import { GetServerSideProps } from 'next';
 import Router from 'next/router';
 import React, { useState } from 'react';
 import { FormEditor } from '../../components/atoms/Editor/Editor';
 import { SingleFileFormEditor } from '../../components/atoms/Editor/SingleFileEditor';
 import Form from '../../components/atoms/Form/Form';
 import FormItem from '../../components/atoms/FormItem/FormItem';
-import Page from '../../components/templates/Page/Page';
-import { APIExternal } from '../../utils/api';
+import Page, { PagePropsUser } from '../../components/templates/Page/Page';
+import { APIExternal, APIInternal } from '../../utils/api';
 import { LanguageDTO } from '../../utils/dto/language.dto';
+import { MaybeErrorProps } from '../../utils/maybe-error-props';
 
-export default function CreateLanguagePage() {
+export const getServerSideProps: GetServerSideProps<
+  MaybeErrorProps<CreateLanguagePageProps>
+> = async (context) => {
+  const api = new APIInternal(context);
+
+  try {
+    const currentUser = await api.getCurrentUser().catch(() => null);
+
+    if (!currentUser) {
+      return api.createErrorServerSideProps(401, 'Unauthorize');
+    }
+
+    return {
+      props: {
+        currentUser,
+      },
+    };
+  } catch (error) {
+    return api.errorToServerSideProps(error);
+  }
+};
+
+export type CreateLanguagePageProps = PagePropsUser;
+
+export default function CreateLanguagePage(props: CreateLanguagePageProps) {
   const api = new APIExternal();
 
   const [isCreateLoading, setIsCreateLoading] = useState(false);
@@ -36,7 +62,11 @@ export default function CreateLanguagePage() {
   };
 
   return (
-    <Page title="Languages" subTitle="Create a language">
+    <Page
+      currentUser={props.currentUser}
+      title="Languages"
+      subTitle="Create a language"
+    >
       <Form
         onFinish={onCreate}
         initialValues={{

@@ -16,7 +16,7 @@ import React, { useState } from 'react';
 import { FormEditor } from '../../../components/atoms/Editor/Editor';
 import Form from '../../../components/atoms/Form/Form';
 import FormItem from '../../../components/atoms/FormItem/FormItem';
-import Page from '../../../components/templates/Page/Page';
+import Page, { PagePropsUser } from '../../../components/templates/Page/Page';
 import { StrategyDTO } from '../../../utils/dto/strategy.dto';
 import { APIExternal, APIInternal } from '../../../utils/api';
 import { LanguageDTO } from '../../../utils/dto/language.dto';
@@ -29,9 +29,14 @@ export const getServerSideProps: GetServerSideProps<
   const api = new APIInternal(context);
 
   try {
+    const currentUser = await api.getCurrentUser().catch(() => null);
+
+    if (!currentUser) {
+      return api.createErrorServerSideProps(401, 'Unauthorize');
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const strategyId = context.params!.id as string;
-
     const strategy = await api.getStrategy(strategyId);
 
     if (!strategy) {
@@ -43,6 +48,7 @@ export const getServerSideProps: GetServerSideProps<
 
     return {
       props: {
+        currentUser,
         languages: await api.getLanguages(),
         strategy,
       },
@@ -52,7 +58,7 @@ export const getServerSideProps: GetServerSideProps<
   }
 };
 
-type EditStrategyPageProps = {
+type EditStrategyPageProps = PagePropsUser & {
   languages: Pick<LanguageDTO, '_id' | 'name'>[];
   strategy: StrategyDTO;
 };
@@ -124,7 +130,11 @@ export default function EditStrategyPage(props: EditStrategyPageProps) {
   };
 
   return (
-    <Page title="Strategies" subTitle="Edit a strategy">
+    <Page
+      currentUser={props.currentUser}
+      title="Strategies"
+      subTitle="Edit a strategy"
+    >
       <Form form={form} onFinish={onEdit} initialValues={props.strategy}>
         <FormItem
           label="Name"
