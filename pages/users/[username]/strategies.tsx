@@ -2,9 +2,8 @@ import { Button, Table } from 'antd';
 import { GetServerSideProps } from 'next';
 import React from 'react';
 import Page from '../../../components/templates/Page/Page';
-import { StrategyDTO } from '../../../types/dto/strategy.dto';
-import { ApiError } from '../../../utils/api-error';
-import { ServerSideAPI } from '../../../utils/api.server';
+import { StrategyDTO } from '../../../utils/dto/strategy.dto';
+import { APIInternal } from '../../../utils/api';
 import { LanguageDTO } from '../../../utils/dto/language.dto';
 import { UserDTO } from '../../../utils/dto/user.dto';
 import { MaybeErrorProps } from '../../../utils/maybe-error-props';
@@ -12,27 +11,21 @@ import { MaybeErrorProps } from '../../../utils/maybe-error-props';
 export const getServerSideProps: GetServerSideProps<
   MaybeErrorProps<UserStrategiesPageProps>
 > = async (context) => {
+  const api = new APIInternal(context);
+
   try {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const username = context.params!.username as string;
-    const server_api = new ServerSideAPI(context);
 
     return {
       props: {
-        languages: await server_api.getLanguages(),
-        user: await server_api.getUser(username),
-        strategies: await server_api.getUserStrategies(username),
+        languages: await api.getLanguages(),
+        user: await api.getUser(username),
+        strategies: await api.getUserStrategies(username),
       },
     };
   } catch (error) {
-    return {
-      props: {
-        error: (error instanceof ApiError
-          ? error
-          : new ApiError(500, 'Unexpected error')
-        ).toObject(),
-      },
-    };
+    return api.errorToServerSideProps(error);
   }
 };
 

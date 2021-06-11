@@ -1,7 +1,7 @@
 import { GetServerSideProps } from 'next';
 import React from 'react';
 import Page from '../../components/templates/Page/Page';
-import { ServerSideAPI } from '../../utils/api.server';
+import { APIInternal } from '../../utils/api';
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { code, state } = context.query;
@@ -15,7 +15,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     };
   }
 
-  const api = new ServerSideAPI(context);
+  const api = new APIInternal(context);
 
   try {
     await api.authLocalCallback(code, state);

@@ -6,33 +6,24 @@ import { FormEditor } from '../../components/atoms/Editor/Editor';
 import Form from '../../components/atoms/Form/Form';
 import FormItem from '../../components/atoms/FormItem/FormItem';
 import Page from '../../components/templates/Page/Page';
-import { StrategyDTO } from '../../types/dto/strategy.dto';
-import * as api from '../../utils/api';
-import { ApiError } from '../../utils/api-error';
-import { ServerSideAPI } from '../../utils/api.server';
+import { StrategyDTO } from '../../utils/dto/strategy.dto';
+import { APIExternal, APIInternal } from '../../utils/api';
 import { LanguageDTO } from '../../utils/dto/language.dto';
 import { MaybeErrorProps } from '../../utils/maybe-error-props';
 
 export const getServerSideProps: GetServerSideProps<
   MaybeErrorProps<CreateStrategyPageProps>
 > = async (context) => {
-  try {
-    const server_api = new ServerSideAPI(context);
+  const api = new APIInternal(context);
 
+  try {
     return {
       props: {
-        languages: await server_api.getLanguages(),
+        languages: await api.getLanguages(),
       },
     };
   } catch (error) {
-    return {
-      props: {
-        error: (error instanceof ApiError
-          ? error
-          : new ApiError(500, 'Unexpected error')
-        ).toObject(),
-      },
-    };
+    return api.errorToServerSideProps(error);
   }
 };
 
@@ -41,28 +32,29 @@ type CreateStrategyPageProps = {
 };
 
 export default function CreateStrategyPage(props: CreateStrategyPageProps) {
+  const api = new APIExternal();
+
   const [isCreateLoading, setIsCreateLoading] = useState(false);
 
   const onCreate = async (strategy: StrategyDTO) => {
     setIsCreateLoading(true);
 
-    const { data, error } = await api.client.createStrategy(strategy);
+    try {
+      const data = await api.createStrategy(strategy);
 
-    setIsCreateLoading(false);
-
-    if (error) {
-      notification.error({
-        message: 'Failed to create the strategy',
-        description: error,
-      });
-    } else {
       notification.success({
         message: 'Successfully created the strategy',
       });
 
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      Router.push(`/strategies/${data!._id}/edit`);
+      Router.push(`/strategies/${data._id}/edit`);
+    } catch (error) {
+      notification.error({
+        message: 'Failed to create the strategy',
+        description: api.errorToString(error),
+      });
     }
+
+    setIsCreateLoading(false);
   };
 
   return (

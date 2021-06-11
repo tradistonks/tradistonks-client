@@ -6,28 +6,26 @@ import { SingleFileFormEditor } from '../../../components/atoms/Editor/SingleFil
 import Form from '../../../components/atoms/Form/Form';
 import FormItem from '../../../components/atoms/FormItem/FormItem';
 import Page from '../../../components/templates/Page/Page';
-import * as api from '../../../utils/api';
-import { ApiError } from '../../../utils/api-error';
-import { ServerSideAPI } from '../../../utils/api.server';
+import { APIExternal, APIInternal } from '../../../utils/api';
 import { LanguageDTO } from '../../../utils/dto/language.dto';
 import { MaybeErrorProps } from '../../../utils/maybe-error-props';
 
 export const getServerSideProps: GetServerSideProps<
   MaybeErrorProps<EditLanguagePageProps>
 > = async (context) => {
+  const api = new APIInternal(context);
+
   try {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const languageId = context.params!.id as string;
-    const server_api = new ServerSideAPI(context);
 
-    const language = await server_api.getLanguage(languageId);
+    const language = await api.getLanguage(languageId);
 
     if (!language) {
-      return {
-        props: {
-          error: new ApiError(404, "This language doesn't exists"),
-        },
-      };
+      return api.createErrorServerSideProps(
+        404,
+        "This language doesn't exists",
+      );
     }
 
     return {
@@ -36,14 +34,7 @@ export const getServerSideProps: GetServerSideProps<
       },
     };
   } catch (error) {
-    return {
-      props: {
-        error: (error instanceof ApiError
-          ? error
-          : new ApiError(500, 'Unexpected error')
-        ).toObject(),
-      },
-    };
+    return api.errorToServerSideProps(error);
   }
 };
 
@@ -52,28 +43,27 @@ type EditLanguagePageProps = {
 };
 
 export default function EditLanguagePage(props: EditLanguagePageProps) {
+  const api = new APIExternal();
+
   const [isUpdateLoading, setIsUpdateLoading] = useState(false);
 
   const onEdit = async (language: Omit<LanguageDTO, '_id'>) => {
     setIsUpdateLoading(true);
 
-    const { error } = await api.client.updateLanguage(
-      props.language._id,
-      language,
-    );
+    try {
+      await api.updateLanguage(props.language._id, language);
 
-    setIsUpdateLoading(false);
-
-    if (error) {
-      notification.error({
-        message: 'Failed to update the language',
-        description: error,
-      });
-    } else {
       notification.success({
         message: 'Successfully updated the language',
       });
+    } catch (error) {
+      notification.error({
+        message: 'Failed to update the language',
+        description: api.errorToString(error),
+      });
     }
+
+    setIsUpdateLoading(false);
   };
 
   return (

@@ -1,45 +1,33 @@
 import { Button, Input, notification } from 'antd';
+import { GetServerSideProps } from 'next';
+import Link from 'next/link';
+import Router from 'next/router';
 import React from 'react';
-import * as api from '../../utils/api';
 import Form from '../../components/atoms/Form/Form';
 import FormItem from '../../components/atoms/FormItem/FormItem';
 import Page from '../../components/templates/Page/Page';
-import Link from 'next/link';
-import { ApiError } from '../../utils/api-error';
-import { GetServerSideProps } from 'next';
+import { APIExternal } from '../../utils/api';
 import { MaybeErrorProps } from '../../utils/maybe-error-props';
-import Router from 'next/router';
 
 export const getServerSideProps: GetServerSideProps<
   MaybeErrorProps<OAuth2LoginPageProps>
 > = async (context) => {
-  try {
-    const { login_challenge } = context.query;
+  const { login_challenge } = context.query;
 
-    if (typeof login_challenge !== 'string') {
-      return {
-        redirect: {
-          permanent: false,
-          destination: '/login',
-        },
-      };
-    }
-
+  if (typeof login_challenge !== 'string') {
     return {
-      props: {
-        login_challenge,
-      },
-    };
-  } catch (error) {
-    return {
-      props: {
-        error: (error instanceof ApiError
-          ? error
-          : new ApiError(500, 'Unexpected error')
-        ).toObject(),
+      redirect: {
+        permanent: false,
+        destination: '/login',
       },
     };
   }
+
+  return {
+    props: {
+      login_challenge,
+    },
+  };
 };
 
 type OAuth2LoginPageProps = {
@@ -47,25 +35,23 @@ type OAuth2LoginPageProps = {
 };
 
 export default function OAuth2LoginPage(props: OAuth2LoginPageProps) {
+  const api = new APIExternal();
+
   type LoginFormData = {
     email: string;
     password: string;
   };
 
   const onLogin = async ({ email, password }: LoginFormData) => {
-    const { data, error } = await api.client.login(
-      email,
-      password,
-      props.login_challenge,
-    );
+    try {
+      const data = await api.login(email, password, props.login_challenge);
 
-    if (error || !data) {
+      Router.push(data.redirect_to);
+    } catch (error) {
       notification.error({
         message: 'Failed to login',
-        description: error,
+        description: api.errorToString(error),
       });
-    } else {
-      Router.push(data.redirect_to);
     }
   };
 

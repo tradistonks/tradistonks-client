@@ -5,8 +5,8 @@ import React from 'react';
 import Form from '../../components/atoms/Form/Form';
 import FormItem from '../../components/atoms/FormItem/FormItem';
 import Page from '../../components/templates/Page/Page';
-import * as api from '../../utils/api';
 import { ApiError } from '../../utils/api-error';
+import { APIExternal } from '../../utils/api';
 import { MaybeErrorProps } from '../../utils/maybe-error-props';
 
 export const getServerSideProps: GetServerSideProps<
@@ -46,25 +46,23 @@ type OAuth2ConsentPageProps = {
 };
 
 export default function OAuth2ConsentPage(props: OAuth2ConsentPageProps) {
+  const api = new APIExternal();
+
   type ConsentFormData = {
     email: string;
     password: string;
   };
 
   const onConsent = async ({ email, password }: ConsentFormData) => {
-    const { data, error } = await api.client.consent(
-      email,
-      password,
-      props.consent_challenge,
-    );
+    try {
+      const data = await api.consent(email, password, props.consent_challenge);
 
-    if (error || !data) {
+      Router.replace(data.redirect_to);
+    } catch (error) {
       notification.error({
         message: 'Failed to consent',
-        description: error,
+        description: api.errorToString(error),
       });
-    } else {
-      Router.replace(data.redirect_to);
     }
   };
 

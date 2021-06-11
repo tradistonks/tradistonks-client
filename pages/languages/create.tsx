@@ -6,32 +6,33 @@ import { SingleFileFormEditor } from '../../components/atoms/Editor/SingleFileEd
 import Form from '../../components/atoms/Form/Form';
 import FormItem from '../../components/atoms/FormItem/FormItem';
 import Page from '../../components/templates/Page/Page';
-import * as api from '../../utils/api';
+import { APIExternal } from '../../utils/api';
 import { LanguageDTO } from '../../utils/dto/language.dto';
 
 export default function CreateLanguagePage() {
+  const api = new APIExternal();
+
   const [isCreateLoading, setIsCreateLoading] = useState(false);
 
   const onCreate = async (language: Omit<LanguageDTO, '_id'>) => {
     setIsCreateLoading(true);
 
-    const { data, error } = await api.client.createLanguage(language);
+    try {
+      const data = await api.createLanguage(language);
 
-    setIsCreateLoading(false);
-
-    if (error) {
-      notification.error({
-        message: 'Failed to create the language',
-        description: error,
-      });
-    } else {
       notification.success({
         message: 'Successfully created the language',
       });
 
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      Router.push(`/languages/${data!._id}/edit`);
+      Router.push(`/languages/${data._id}/edit`);
+    } catch (error) {
+      notification.error({
+        message: 'Failed to create the language',
+        description: api.errorToString(error),
+      });
     }
+
+    setIsCreateLoading(false);
   };
 
   return (

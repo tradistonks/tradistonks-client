@@ -1,11 +1,14 @@
 import { Button, Input, notification } from 'antd';
+import Router from 'next/router';
 import React from 'react';
-import * as api from '../utils/api';
 import Form from '../components/atoms/Form/Form';
 import FormItem from '../components/atoms/FormItem/FormItem';
 import Page from '../components/templates/Page/Page';
+import { APIExternal } from '../utils/api';
 
 export default function Register() {
+  const api = new APIExternal();
+
   type LoginFormData = {
     email: string;
     username: string;
@@ -19,21 +22,16 @@ export default function Register() {
     password,
     passwordConfirmation,
   }: LoginFormData) => {
-    const { data, error } = await api.client.register(
-      email,
-      username,
-      password,
-      passwordConfirmation,
-    );
+    try {
+      await api.register(email, username, password, passwordConfirmation);
 
-    if (error) {
+      Router.push('/login');
+    } catch (error) {
       notification.error({
         message: 'Failed to register',
-        description: error,
+        description: api.errorToString(error),
       });
     }
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    console.log(data!);
   };
   return (
     <Page title="Register" subTitle="Create a new account">

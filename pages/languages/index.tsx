@@ -2,32 +2,23 @@ import { Button, Table } from 'antd';
 import { GetServerSideProps } from 'next';
 import React from 'react';
 import Page from '../../components/templates/Page/Page';
-import { ApiError } from '../../utils/api-error';
-import { ServerSideAPI } from '../../utils/api.server';
+import { APIInternal } from '../../utils/api';
 import { LanguageDTO } from '../../utils/dto/language.dto';
 import { MaybeErrorProps } from '../../utils/maybe-error-props';
 
 export const getServerSideProps: GetServerSideProps<
   MaybeErrorProps<LanguagesPageProps>
 > = async (context) => {
-  try {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const server_api = new ServerSideAPI(context);
+  const api = new APIInternal(context);
 
+  try {
     return {
       props: {
-        languages: await server_api.getLanguages(),
+        languages: await api.getLanguages(),
       },
     };
   } catch (error) {
-    return {
-      props: {
-        error: (error instanceof ApiError
-          ? error
-          : new ApiError(500, 'Unexpected error')
-        ).toObject(),
-      },
-    };
+    return api.errorToServerSideProps(error);
   }
 };
 
