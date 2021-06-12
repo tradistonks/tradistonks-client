@@ -12,6 +12,7 @@ import { LanguageDTO } from './dto/language.dto';
 import { RunResultDTO } from './dto/run-result.dto';
 import { UserDTO } from './dto/user.dto';
 import { MaybeErrorProps } from './maybe-error-props';
+import { SymbolSearchResponseDTO } from './dto/symbol-search-response.dto';
 
 const {
   serverRuntimeConfig: { API_INTERNAL_HOST },
@@ -135,6 +136,13 @@ export abstract class APIBase {
     return await this.request<StrategyDTO[]>(
       'GET',
       `/users/${username}/strategies`,
+    );
+  }
+
+  async searchSymbols(search: string) {
+    return await this.request<SymbolSearchResponseDTO>(
+      'GET',
+      `/stocks/search?q=${search}`,
     );
   }
 }
