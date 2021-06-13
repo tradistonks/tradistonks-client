@@ -62,7 +62,7 @@ type EditStrategyPageProps = PagePropsUser & {
 export default function EditStrategyPage(props: EditStrategyPageProps) {
   const api = new APIExternal();
 
-  const [form] = useForm();
+  const [form] = useForm<StrategyDTO>();
 
   const [isUpdateLoading, setIsUpdateLoading] = useState(false);
   const [isRunLoading, setIsRunLoading] = useState(false);
@@ -131,7 +131,7 @@ export default function EditStrategyPage(props: EditStrategyPageProps) {
       title="Strategies"
       subTitle="Edit a strategy"
     >
-      <StrategyForm<StrategyDTO>
+      <StrategyForm
         form={form}
         initialValues={props.strategy}
         onFinish={onEdit}

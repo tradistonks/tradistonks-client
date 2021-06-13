@@ -68,7 +68,7 @@ export default function CreateStrategyPage(props: CreateStrategyPageProps) {
       title="Strategies"
       subTitle="Create a strategy"
     >
-      <StrategyForm<StrategyDTO>
+      <StrategyForm
         onFinish={onCreate}
         languages={props.languages}
         actions={[

@@ -1,4 +1,5 @@
 import {
+  Button,
   Col,
   FormInstance,
   Input,
@@ -8,29 +9,34 @@ import {
   Select,
   Space,
 } from 'antd';
+import { useForm } from 'antd/lib/form/Form';
 import { Store } from 'antd/lib/form/interface';
 import React, { useState } from 'react';
 import { APIExternal } from '../../../utils/api';
 import { LanguageDTO } from '../../../utils/dto/language.dto';
+import {
+  StrategyDTO,
+  StrategyDTOSymbol,
+} from '../../../utils/dto/strategy.dto';
 import { SymbolSearchResponseDTOResult } from '../../../utils/dto/symbol-search-response.dto';
 import { FormEditor } from '../../atoms/Editor/Editor';
-import Form from '../../atoms/Form/Form';
+import Form, { FormList } from '../../atoms/Form/Form';
 import FormItem from '../../atoms/FormItem/FormItem';
 
-export type StrategyFormProps<Values = unknown> = {
-  form?: FormInstance<Values>;
+export type StrategyFormProps = {
+  form?: FormInstance<StrategyDTO>;
   initialValues?: Store;
-  onFinish: (values: Values) => void;
+  onFinish: (values: StrategyDTO) => void;
 
   languages: Pick<LanguageDTO, '_id' | 'name'>[];
 
   actions?: React.ReactNode[];
 };
 
-export function StrategyForm<Values = unknown>(
-  props: StrategyFormProps<Values>,
-) {
+export function StrategyForm(props: StrategyFormProps) {
   const api = new APIExternal();
+
+  const [form] = useForm<StrategyDTO>(props.form);
 
   const [isSymbolSearchLoading, setIsSymbolSearchLoading] = useState(false);
   const [symbolSearchResult, setSymbolSearchResult] = useState<
@@ -61,6 +67,11 @@ export function StrategyForm<Values = unknown>(
     }
 
     setIsSymbolSearchLoading(false);
+  };
+
+  const hasTicker = (ticker: string) => {
+    const symbols = form.getFieldValue('symbols') as StrategyDTOSymbol[];
+    return symbols.some((symbol) => symbol.ticker === ticker);
   };
 
   return (
@@ -105,30 +116,96 @@ export function StrategyForm<Values = unknown>(
             </Select>
           </FormItem>
 
-          <FormItem label="Symbols">
-            <Input.Search
-              placeholder="Search a symbol"
-              onSearch={onSymbolSearch}
-              loading={isSymbolSearchLoading}
-              enterButton
-            />
-            <List
-              itemLayout="horizontal"
-              dataSource={symbolSearchResult}
-              style={{
-                overflow: 'auto',
-                maxHeight: '400px',
-              }}
-              renderItem={(item) => (
-                <List.Item>
-                  <List.Item.Meta
-                    title={item.description || item.displaySymbol}
-                    description={item.symbol}
-                  />
-                  <div>{item.type}</div>
-                </List.Item>
+          <FormItem label="Symbols" required>
+            <FormList
+              name="symbols"
+              rules={[
+                {
+                  validator: async (_, names) => {
+                    if (!names || names.length < 1) {
+                      throw new Error('At least 1 symbol needed');
+                    }
+                  },
+                },
+              ]}
+            >
+              {(fields, { add, remove }) => (
+                <>
+                  <FormItem hidden={fields.length === 0}>
+                    <List
+                      itemLayout="horizontal"
+                      dataSource={fields}
+                      style={{
+                        overflow: 'auto',
+                        maxHeight: '400px',
+                      }}
+                      renderItem={(_, index) => {
+                        const symbol = form.getFieldValue([
+                          'symbols',
+                          index,
+                        ]) as StrategyDTOSymbol;
+
+                        return (
+                          <List.Item>
+                            <List.Item.Meta
+                              title={symbol.name}
+                              description={symbol.ticker}
+                            />
+                            <Space>
+                              <div>{symbol.type}</div>
+                              <Button onClick={() => remove(index)}>-</Button>
+                            </Space>
+                          </List.Item>
+                        );
+                      }}
+                    />
+                  </FormItem>
+                  <FormItem>
+                    <Input.Search
+                      placeholder="Search a symbol"
+                      onSearch={onSymbolSearch}
+                      loading={isSymbolSearchLoading}
+                      enterButton
+                    />
+                    <List
+                      itemLayout="horizontal"
+                      dataSource={symbolSearchResult}
+                      style={{
+                        overflow: 'auto',
+                        maxHeight: '400px',
+                      }}
+                      renderItem={(item) => (
+                        <List.Item>
+                          <List.Item.Meta
+                            title={item.description || item.displaySymbol}
+                            description={item.symbol}
+                          />
+                          <Space>
+                            <div>{item.type}</div>
+                            <Button
+                              onClick={() => {
+                                add({
+                                  name: item.description || item.displaySymbol,
+                                  ticker: item.symbol,
+                                  type: item.type,
+                                });
+                              }}
+                              style={{
+                                visibility: hasTicker(item.symbol)
+                                  ? 'hidden'
+                                  : undefined,
+                              }}
+                            >
+                              +
+                            </Button>
+                          </Space>
+                        </List.Item>
+                      )}
+                    />
+                  </FormItem>
+                </>
               )}
-            />
+            </FormList>
           </FormItem>
         </Col>
 
