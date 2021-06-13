@@ -12,7 +12,7 @@ import { useForm } from 'antd/lib/form/Form';
 import { GetServerSideProps } from 'next';
 import React, { useState } from 'react';
 import Page, { PagePropsUser } from '../../../components/templates/Page/Page';
-import { StrategyForm } from '../../../components/templates/StrategyForm/StrategyForm';
+import { StrategyForm } from '../../../components/organisms/StrategyForm/StrategyForm';
 import { APIExternal, APIInternal } from '../../../utils/api';
 import { LanguageDTO } from '../../../utils/dto/language.dto';
 import { RunResultDTOPhase } from '../../../utils/dto/run-result.dto';

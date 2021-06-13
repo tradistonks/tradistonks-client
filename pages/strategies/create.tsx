@@ -3,7 +3,7 @@ import { GetServerSideProps } from 'next';
 import Router from 'next/router';
 import React, { useState } from 'react';
 import Page, { PagePropsUser } from '../../components/templates/Page/Page';
-import { StrategyForm } from '../../components/templates/StrategyForm/StrategyForm';
+import { StrategyForm } from '../../components/organisms/StrategyForm/StrategyForm';
 import { APIExternal, APIInternal } from '../../utils/api';
 import { LanguageDTO } from '../../utils/dto/language.dto';
 import { StrategyDTO } from '../../utils/dto/strategy.dto';
