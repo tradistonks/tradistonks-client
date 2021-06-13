@@ -116,6 +116,23 @@ export function StrategyForm(props: StrategyFormProps) {
             </Select>
           </FormItem>
 
+          <FormItem
+            label="Symbols Candles Granularity"
+            name="symbols_candles_granularity"
+            required
+          >
+            <Select>
+              <Select.Option value="1">1 minute</Select.Option>
+              <Select.Option value="5">5 minutes</Select.Option>
+              <Select.Option value="15">15 minutes</Select.Option>
+              <Select.Option value="30">30 minutes</Select.Option>
+              <Select.Option value="60">60 minutes</Select.Option>
+              <Select.Option value="D">1 day</Select.Option>
+              <Select.Option value="W">1 week</Select.Option>
+              <Select.Option value="M">1 month</Select.Option>
+            </Select>
+          </FormItem>
+
           <FormItem label="Symbols" required>
             <FormList
               name="symbols"
