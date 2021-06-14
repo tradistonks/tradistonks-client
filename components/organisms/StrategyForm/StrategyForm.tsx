@@ -1,6 +1,7 @@
 import {
   Button,
   Col,
+  DatePicker,
   FormInstance,
   Input,
   List,
@@ -10,7 +11,7 @@ import {
   Space,
 } from 'antd';
 import { useForm } from 'antd/lib/form/Form';
-import { Store } from 'antd/lib/form/interface';
+import moment from 'moment';
 import React, { useState } from 'react';
 import { APIExternal } from '../../../utils/api';
 import { LanguageDTO } from '../../../utils/dto/language.dto';
@@ -25,7 +26,7 @@ import FormItem from '../../atoms/FormItem/FormItem';
 
 export type StrategyFormProps = {
   form?: FormInstance<StrategyDTO>;
-  initialValues?: Store;
+  initialValues?: Partial<StrategyDTO>;
   onFinish: (values: StrategyDTO) => void;
 
   languages: Pick<LanguageDTO, '_id' | 'name'>[];
@@ -74,11 +75,17 @@ export function StrategyForm(props: StrategyFormProps) {
     return symbols.some((symbol) => symbol.ticker === ticker);
   };
 
+  const momentOrNull = (d?: Date) => (d ? moment(d) : null);
+
   return (
     <Form
       form={props.form}
       onFinish={props.onFinish}
-      initialValues={props.initialValues}
+      initialValues={{
+        ...props.initialValues,
+        from: momentOrNull(props.initialValues?.from),
+        to: momentOrNull(props.initialValues?.to),
+      }}
     >
       <Row gutter={16}>
         <Col span={6}>
@@ -131,6 +138,14 @@ export function StrategyForm(props: StrategyFormProps) {
               <Select.Option value="W">1 week</Select.Option>
               <Select.Option value="M">1 month</Select.Option>
             </Select>
+          </FormItem>
+
+          <FormItem label="Symbols Data Start" name="from" required>
+            <DatePicker showTime />
+          </FormItem>
+
+          <FormItem label="Symbols Data End" name="to">
+            <DatePicker showTime />
           </FormItem>
 
           <FormItem label="Symbols" required>
