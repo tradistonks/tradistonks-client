@@ -62,7 +62,11 @@ export default function LanguagesPage(props: LanguagesPageProps) {
             key: 'actions',
             // eslint-disable-next-line react/display-name
             render: (_, { _id }) => (
-              <Button type="primary" href={`/languages/${_id}/edit`}>
+              <Button
+                key={`actions-${_id}`}
+                type="primary"
+                href={`/languages/${_id}/edit`}
+              >
                 Edit
               </Button>
             ),
