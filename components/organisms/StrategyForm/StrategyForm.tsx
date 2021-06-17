@@ -79,7 +79,7 @@ export function StrategyForm(props: StrategyFormProps) {
 
   return (
     <Form
-      form={props.form}
+      form={form}
       onFinish={props.onFinish}
       initialValues={{
         symbols: [],
@@ -173,6 +173,7 @@ export function StrategyForm(props: StrategyFormProps) {
                         maxHeight: '400px',
                       }}
                       renderItem={(_, index) => {
+                        form.getFieldValue('symbols');
                         const symbol = form.getFieldValue([
                           'symbols',
                           index,

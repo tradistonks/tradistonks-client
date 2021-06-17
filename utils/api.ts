@@ -199,7 +199,7 @@ export class APIInternal extends APIBase {
       return data;
     } catch (error) {
       throw new ApiError(
-        error?.response?.status ?? -1,
+        error?.response?.statusCode ?? error?.response?.status ?? -1,
         error?.response?.data?.message ?? 'Unexpected error',
       );
     }
