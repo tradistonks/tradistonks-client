@@ -82,6 +82,7 @@ export function StrategyForm(props: StrategyFormProps) {
       form={props.form}
       onFinish={props.onFinish}
       initialValues={{
+        symbols: [],
         ...props.initialValues,
         from: momentOrNull(props.initialValues?.from),
         to: momentOrNull(props.initialValues?.to),
