@@ -11,13 +11,14 @@ import {
 import { useForm } from 'antd/lib/form/Form';
 import { GetServerSideProps } from 'next';
 import React, { useState } from 'react';
-import Page, { PagePropsUser } from '../../../components/templates/Page/Page';
 import { StrategyForm } from '../../../components/organisms/StrategyForm/StrategyForm';
+import Page, { PagePropsUser } from '../../../components/templates/Page/Page';
 import { APIExternal, APIInternal } from '../../../utils/api';
 import { LanguageDTO } from '../../../utils/dto/language.dto';
 import { RunResultDTOPhase } from '../../../utils/dto/run-result.dto';
 import { StrategyDTO } from '../../../utils/dto/strategy.dto';
 import { MaybeErrorProps } from '../../../utils/maybe-error-props';
+import styles from './edit.module.scss';
 
 export const getServerSideProps: GetServerSideProps<
   MaybeErrorProps<EditStrategyPageProps>
@@ -175,7 +176,9 @@ export default function EditStrategyPage(props: EditStrategyPageProps) {
                   {!phaseResult.stdout ? null : (
                     <>
                       <Typography.Title level={3}>stdout</Typography.Title>
-                      <p>{phaseResult.stdout}</p>
+                      <p className={styles['phase-result']}>
+                        {phaseResult.stdout}
+                      </p>
 
                       <Divider />
                     </>
@@ -184,7 +187,9 @@ export default function EditStrategyPage(props: EditStrategyPageProps) {
                   {!phaseResult.stderr ? null : (
                     <>
                       <Typography.Title level={3}>stderr</Typography.Title>
-                      <p>{phaseResult.stderr}</p>
+                      <p className={styles['phase-result']}>
+                        {phaseResult.stderr}
+                      </p>
                     </>
                   )}
 
