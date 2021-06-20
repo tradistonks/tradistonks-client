@@ -74,7 +74,11 @@ export default function UserStrategiesPage(props: UserStrategiesPageProps) {
             key: 'actions',
             // eslint-disable-next-line react/display-name
             render: (_, { _id }) => (
-              <Button type="primary" href={`/strategies/${_id}/edit`}>
+              <Button
+                key={`action-${_id}`}
+                type="primary"
+                href={`/strategies/${_id}/edit`}
+              >
                 Edit
               </Button>
             ),
