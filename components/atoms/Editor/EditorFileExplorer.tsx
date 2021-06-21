@@ -83,7 +83,6 @@ export default function EditorFileExplorer(
     if (!fileName) return;
 
     props.onCreate(fileName, value);
-    props.onSelect?.(fileName);
 
     setFileName('');
   };

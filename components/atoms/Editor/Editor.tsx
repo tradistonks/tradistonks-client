@@ -115,11 +115,16 @@ export default function Editor(props: EditorProps) {
   };
 
   const onChange: OnChange = (value) => {
-    props.onChange?.(currentPath, value ?? '');
+    if (props.files.some((file) => file.path === currentPath)) {
+      props.onChange?.(currentPath, value ?? '');
+    }
   };
 
   const onCreate = (path: string, value: string) => {
-    props.onChange?.(path.startsWith('/') ? path : `/${path}`, value);
+    const absolutePath = path.startsWith('/') ? path : `/${path}`;
+
+    props.onChange?.(absolutePath, value);
+    onFileSelect(absolutePath);
   };
 
   const onRemove = (path: string) => {
