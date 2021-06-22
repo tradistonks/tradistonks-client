@@ -173,7 +173,6 @@ export function StrategyForm(props: StrategyFormProps) {
                         maxHeight: '400px',
                       }}
                       renderItem={(_, index) => {
-                        form.getFieldValue('symbols');
                         const symbol = form.getFieldValue([
                           'symbols',
                           index,

@@ -55,6 +55,7 @@ export default function UserStrategiesPage(props: UserStrategiesPageProps) {
       }
     >
       <Table
+        dataSource={props.strategies}
         columns={[
           {
             title: 'Name',
@@ -84,7 +85,6 @@ export default function UserStrategiesPage(props: UserStrategiesPageProps) {
             ),
           },
         ]}
-        dataSource={props.strategies}
       />
     </Page>
   );

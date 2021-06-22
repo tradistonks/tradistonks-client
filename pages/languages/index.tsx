@@ -46,6 +46,7 @@ export default function LanguagesPage(props: LanguagesPageProps) {
       }
     >
       <Table
+        dataSource={props.languages}
         columns={[
           {
             title: 'Name',
@@ -72,7 +73,6 @@ export default function LanguagesPage(props: LanguagesPageProps) {
             ),
           },
         ]}
-        dataSource={props.languages}
       />
     </Page>
   );

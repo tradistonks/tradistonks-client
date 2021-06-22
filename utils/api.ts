@@ -13,6 +13,8 @@ import { RunResultDTO } from './dto/run-result.dto';
 import { UserDTO } from './dto/user.dto';
 import { MaybeErrorProps } from './maybe-error-props';
 import { SymbolSearchResponseDTO } from './dto/symbol-search-response.dto';
+import { PermissionDTO } from './dto/permission.dto';
+import { RoleDTO } from './dto/role.dto';
 
 const {
   serverRuntimeConfig: { API_INTERNAL_HOST },
@@ -144,6 +146,46 @@ export abstract class APIBase {
       'GET',
       `/stocks/search?q=${search}`,
     );
+  }
+
+  async getPermissions() {
+    return await this.request<PermissionDTO[]>('GET', '/permissions');
+  }
+
+  async createPermission(data: Omit<PermissionDTO, '_id'>) {
+    return this.request<PermissionDTO>('POST', '/permissions', {
+      body: data,
+    });
+  }
+
+  async updatePermission(id: string, data: Omit<PermissionDTO, '_id'>) {
+    return this.request<PermissionDTO>('PUT', `/permissions/${id}`, {
+      body: data,
+    });
+  }
+
+  async deletePermission(id: string) {
+    return this.request<{ ok: true }>('DELETE', `/permissions/${id}`);
+  }
+
+  async getRoles() {
+    return await this.request<RoleDTO[]>('GET', '/roles');
+  }
+
+  async createRole(data: Omit<RoleDTO, '_id'>) {
+    return this.request<RoleDTO>('POST', '/roles', {
+      body: data,
+    });
+  }
+
+  async updateRole(id: string, data: Omit<RoleDTO, '_id'>) {
+    return this.request<RoleDTO>('PUT', `/roles/${id}`, {
+      body: data,
+    });
+  }
+
+  async deleteRole(id: string) {
+    return this.request<{ ok: true }>('DELETE', `/roles/${id}`);
   }
 }
 
