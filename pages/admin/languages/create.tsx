@@ -1,5 +1,6 @@
 import { Button, Input, notification, Row } from 'antd';
 import { GetServerSideProps } from 'next';
+import Router from 'next/router';
 import React, { useState } from 'react';
 import { FormEditor } from '../../../components/atoms/Editor/Editor';
 import { SingleFileFormEditor } from '../../../components/atoms/Editor/SingleFileEditor';
@@ -11,7 +12,7 @@ import { LanguageDTO } from '../../../utils/dto/language.dto';
 import { MaybeErrorProps } from '../../../utils/maybe-error-props';
 
 export const getServerSideProps: GetServerSideProps<
-  MaybeErrorProps<EditLanguagePageProps>
+  MaybeErrorProps<CreateLanguagePageProps>
 > = async (context) => {
   const api = new APIInternal(context);
 
@@ -22,21 +23,9 @@ export const getServerSideProps: GetServerSideProps<
       return api.createErrorServerSideProps(401, 'Unauthorize');
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const languageId = context.params!.id as string;
-    const language = await api.getLanguage(languageId);
-
-    if (!language) {
-      return api.createErrorServerSideProps(
-        404,
-        "This language doesn't exists",
-      );
-    }
-
     return {
       props: {
         currentUser,
-        language,
       },
     };
   } catch (error) {
@@ -44,41 +33,46 @@ export const getServerSideProps: GetServerSideProps<
   }
 };
 
-type EditLanguagePageProps = PagePropsUser & {
-  language: LanguageDTO;
-};
+export type CreateLanguagePageProps = PagePropsUser;
 
-export default function EditLanguagePage(props: EditLanguagePageProps) {
+export default function CreateLanguagePage(props: CreateLanguagePageProps) {
   const api = new APIExternal();
 
-  const [isUpdateLoading, setIsUpdateLoading] = useState(false);
+  const [isCreateLoading, setIsCreateLoading] = useState(false);
 
-  const onEdit = async (language: Omit<LanguageDTO, '_id'>) => {
-    setIsUpdateLoading(true);
+  const onCreate = async (language: Omit<LanguageDTO, '_id'>) => {
+    setIsCreateLoading(true);
 
     try {
-      await api.updateLanguage(props.language._id, language);
+      const data = await api.createLanguage(language);
 
       notification.success({
-        message: 'Successfully updated the language',
+        message: 'Successfully created the language',
       });
+
+      Router.push(`/languages/${data._id}/edit`);
     } catch (error) {
       notification.error({
-        message: 'Failed to update the language',
+        message: 'Failed to create the language',
         description: api.errorToString(error),
       });
     }
 
-    setIsUpdateLoading(false);
+    setIsCreateLoading(false);
   };
 
   return (
     <Page
       currentUser={props.currentUser}
       title="Languages"
-      subTitle="Edit a language"
+      subTitle="Create a language"
     >
-      <Form onFinish={onEdit} initialValues={props.language}>
+      <Form
+        onFinish={onCreate}
+        initialValues={{
+          files: [],
+        }}
+      >
         <FormItem
           label="Name"
           name="name"
@@ -120,8 +114,8 @@ export default function EditLanguagePage(props: EditLanguagePageProps) {
 
         <Row justify="end">
           <FormItem>
-            <Button type="primary" loading={isUpdateLoading} htmlType="submit">
-              Update
+            <Button type="primary" loading={isCreateLoading} htmlType="submit">
+              Create
             </Button>
           </FormItem>
         </Row>

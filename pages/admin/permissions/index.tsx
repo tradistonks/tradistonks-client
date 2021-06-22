@@ -2,12 +2,12 @@ import { Button, Input, Modal, notification, Space, Table } from 'antd';
 import { useForm } from 'antd/lib/form/Form';
 import { GetServerSideProps } from 'next';
 import React, { useState } from 'react';
-import Form from '../../components/atoms/Form/Form';
-import FormItem from '../../components/atoms/FormItem/FormItem';
-import Page, { PagePropsUser } from '../../components/templates/Page/Page';
-import { APIExternal, APIInternal } from '../../utils/api';
-import { PermissionDTO } from '../../utils/dto/permission.dto';
-import { MaybeErrorProps } from '../../utils/maybe-error-props';
+import Form from '../../../components/atoms/Form/Form';
+import FormItem from '../../../components/atoms/FormItem/FormItem';
+import Page, { PagePropsUser } from '../../../components/templates/Page/Page';
+import { APIExternal, APIInternal } from '../../../utils/api';
+import { PermissionDTO } from '../../../utils/dto/permission.dto';
+import { MaybeErrorProps } from '../../../utils/maybe-error-props';
 
 export const getServerSideProps: GetServerSideProps<
   MaybeErrorProps<PermissionsPageProps>

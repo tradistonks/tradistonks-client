@@ -1,18 +1,19 @@
 import { Button, Input, notification, Row } from 'antd';
 import { GetServerSideProps } from 'next';
-import Router from 'next/router';
 import React, { useState } from 'react';
-import { FormEditor } from '../../components/atoms/Editor/Editor';
-import { SingleFileFormEditor } from '../../components/atoms/Editor/SingleFileEditor';
-import Form from '../../components/atoms/Form/Form';
-import FormItem from '../../components/atoms/FormItem/FormItem';
-import Page, { PagePropsUser } from '../../components/templates/Page/Page';
-import { APIExternal, APIInternal } from '../../utils/api';
-import { LanguageDTO } from '../../utils/dto/language.dto';
-import { MaybeErrorProps } from '../../utils/maybe-error-props';
+import { FormEditor } from '../../../../components/atoms/Editor/Editor';
+import { SingleFileFormEditor } from '../../../../components/atoms/Editor/SingleFileEditor';
+import Form from '../../../../components/atoms/Form/Form';
+import FormItem from '../../../../components/atoms/FormItem/FormItem';
+import Page, {
+  PagePropsUser,
+} from '../../../../components/templates/Page/Page';
+import { APIExternal, APIInternal } from '../../../../utils/api';
+import { LanguageDTO } from '../../../../utils/dto/language.dto';
+import { MaybeErrorProps } from '../../../../utils/maybe-error-props';
 
 export const getServerSideProps: GetServerSideProps<
-  MaybeErrorProps<CreateLanguagePageProps>
+  MaybeErrorProps<EditLanguagePageProps>
 > = async (context) => {
   const api = new APIInternal(context);
 
@@ -23,9 +24,21 @@ export const getServerSideProps: GetServerSideProps<
       return api.createErrorServerSideProps(401, 'Unauthorize');
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const languageId = context.params!.id as string;
+    const language = await api.getLanguage(languageId);
+
+    if (!language) {
+      return api.createErrorServerSideProps(
+        404,
+        "This language doesn't exists",
+      );
+    }
+
     return {
       props: {
         currentUser,
+        language,
       },
     };
   } catch (error) {
@@ -33,46 +46,41 @@ export const getServerSideProps: GetServerSideProps<
   }
 };
 
-export type CreateLanguagePageProps = PagePropsUser;
+type EditLanguagePageProps = PagePropsUser & {
+  language: LanguageDTO;
+};
 
-export default function CreateLanguagePage(props: CreateLanguagePageProps) {
+export default function EditLanguagePage(props: EditLanguagePageProps) {
   const api = new APIExternal();
 
-  const [isCreateLoading, setIsCreateLoading] = useState(false);
+  const [isUpdateLoading, setIsUpdateLoading] = useState(false);
 
-  const onCreate = async (language: Omit<LanguageDTO, '_id'>) => {
-    setIsCreateLoading(true);
+  const onEdit = async (language: Omit<LanguageDTO, '_id'>) => {
+    setIsUpdateLoading(true);
 
     try {
-      const data = await api.createLanguage(language);
+      await api.updateLanguage(props.language._id, language);
 
       notification.success({
-        message: 'Successfully created the language',
+        message: 'Successfully updated the language',
       });
-
-      Router.push(`/languages/${data._id}/edit`);
     } catch (error) {
       notification.error({
-        message: 'Failed to create the language',
+        message: 'Failed to update the language',
         description: api.errorToString(error),
       });
     }
 
-    setIsCreateLoading(false);
+    setIsUpdateLoading(false);
   };
 
   return (
     <Page
       currentUser={props.currentUser}
       title="Languages"
-      subTitle="Create a language"
+      subTitle="Edit a language"
     >
-      <Form
-        onFinish={onCreate}
-        initialValues={{
-          files: [],
-        }}
-      >
+      <Form onFinish={onEdit} initialValues={props.language}>
         <FormItem
           label="Name"
           name="name"
@@ -114,8 +122,8 @@ export default function CreateLanguagePage(props: CreateLanguagePageProps) {
 
         <Row justify="end">
           <FormItem>
-            <Button type="primary" loading={isCreateLoading} htmlType="submit">
-              Create
+            <Button type="primary" loading={isUpdateLoading} htmlType="submit">
+              Update
             </Button>
           </FormItem>
         </Row>

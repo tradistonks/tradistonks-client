@@ -33,24 +33,24 @@ export default function Header(props: HeaderProps) {
             >
               <Menu.ItemGroup title="Strategies">
                 <Menu.Item key="nav-admin-strategies-languages">
-                  <Link href="/languages">
+                  <Link href="/admin/languages">
                     <a>Languages</a>
                   </Link>
                 </Menu.Item>
               </Menu.ItemGroup>
               <Menu.ItemGroup title="Users">
                 <Menu.Item key="nav-admin-users-users">
-                  <Link href="/users">
+                  <Link href="/admin/users">
                     <a>Users</a>
                   </Link>
                 </Menu.Item>
                 <Menu.Item key="nav-admin-users-roles">
-                  <Link href="/roles">
+                  <Link href="/admin/roles">
                     <a>Roles</a>
                   </Link>
                 </Menu.Item>
                 <Menu.Item key="nav-admin-users-permissions">
-                  <Link href="/permissions">
+                  <Link href="/admin/permissions">
                     <a>Permissions</a>
                   </Link>
                 </Menu.Item>

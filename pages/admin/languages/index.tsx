@@ -1,10 +1,10 @@
 import { Button, Table } from 'antd';
 import { GetServerSideProps } from 'next';
 import React from 'react';
-import Page, { PagePropsUser } from '../../components/templates/Page/Page';
-import { APIInternal } from '../../utils/api';
-import { LanguageDTO } from '../../utils/dto/language.dto';
-import { MaybeErrorProps } from '../../utils/maybe-error-props';
+import Page, { PagePropsUser } from '../../../components/templates/Page/Page';
+import { APIInternal } from '../../../utils/api';
+import { LanguageDTO } from '../../../utils/dto/language.dto';
+import { MaybeErrorProps } from '../../../utils/maybe-error-props';
 
 export const getServerSideProps: GetServerSideProps<
   MaybeErrorProps<LanguagesPageProps>
@@ -40,7 +40,7 @@ export default function LanguagesPage(props: LanguagesPageProps) {
       title="Languages"
       subTitle=""
       extra={
-        <Button type="primary" href="/languages/create">
+        <Button type="primary" href="/admin/languages/create">
           Add a language
         </Button>
       }
@@ -66,7 +66,7 @@ export default function LanguagesPage(props: LanguagesPageProps) {
               <Button
                 key={`actions-${_id}`}
                 type="primary"
-                href={`/languages/${_id}/edit`}
+                href={`/admin/languages/${_id}/edit`}
               >
                 Edit
               </Button>
