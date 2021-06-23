@@ -126,6 +126,10 @@ export abstract class APIBase {
     });
   }
 
+  async getUsers() {
+    return await this.request<UserDTO[]>('GET', `/users`);
+  }
+
   async getUser(username: string) {
     return await this.request<UserDTO>('GET', `/users/${username}`);
   }
@@ -139,6 +143,16 @@ export abstract class APIBase {
       'GET',
       `/users/${username}/strategies`,
     );
+  }
+
+  async updateUser(id: string, data: Omit<UserDTO, '_id'>) {
+    return this.request<UserDTO>('PUT', `/users/${id}`, {
+      body: data,
+    });
+  }
+
+  async deleteUser(id: string) {
+    return this.request<{ ok: true }>('DELETE', `/users/${id}`);
   }
 
   async searchSymbols(search: string) {
