@@ -225,7 +225,7 @@ export default function EditStrategyPage(props: EditStrategyPageProps) {
                   dataIndex: 'timestamp',
                   key: 'date',
                   render: (timestamp: number) =>
-                    moment(timestamp * 1000).format(),
+                    moment(timestamp * 1000).format('LLL'),
                 },
                 {
                   title: 'Type',
@@ -240,11 +240,6 @@ export default function EditStrategyPage(props: EditStrategyPageProps) {
                 {
                   title: 'Quantity',
                   dataIndex: 'quantity',
-                  key: 'quantity',
-                },
-                {
-                  title: 'Quantity',
-                  dataIndex: 'timestamp',
                   key: 'quantity',
                 },
               ]}
