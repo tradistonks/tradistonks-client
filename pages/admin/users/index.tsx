@@ -243,7 +243,7 @@ export default function UsersPage(props: UsersPageProps) {
           </FormItem>
 
           <FormList name="roles">
-            {(fields, { add, remove }) => (
+            {(_, { add, remove }) => (
               <>
                 {props.roles.map((role) => {
                   const index = editUserForm

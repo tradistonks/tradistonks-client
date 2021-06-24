@@ -236,7 +236,7 @@ export default function RolesPage(props: RolesPageProps) {
           </FormItem>
 
           <FormList name="permissions">
-            {(fields, { add, remove }) => (
+            {(_, { add, remove }) => (
               <>
                 {props.permissions.map((permission) => {
                   const index = newRoleForm
@@ -294,7 +294,7 @@ export default function RolesPage(props: RolesPageProps) {
           </FormItem>
 
           <FormList name="permissions">
-            {(fields, { add, remove }) => (
+            {(_, { add, remove }) => (
               <>
                 {props.permissions.map((permission) => {
                   const index = editRoleForm
