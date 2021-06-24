@@ -5,17 +5,21 @@ import {
   Divider,
   notification,
   Row,
-  Space,
+  Table,
   Typography,
 } from 'antd';
 import { useForm } from 'antd/lib/form/Form';
+import moment from 'moment';
 import { GetServerSideProps } from 'next';
 import React, { useState } from 'react';
 import { StrategyForm } from '../../../components/organisms/StrategyForm/StrategyForm';
 import Page, { PagePropsUser } from '../../../components/templates/Page/Page';
 import { APIExternal, APIInternal } from '../../../utils/api';
 import { LanguageDTO } from '../../../utils/dto/language.dto';
-import { RunResultDTOPhase } from '../../../utils/dto/run-result.dto';
+import {
+  RunResultDTOOrder,
+  RunResultDTOPhase,
+} from '../../../utils/dto/run-result.dto';
 import { StrategyDTO } from '../../../utils/dto/strategy.dto';
 import { MaybeErrorProps } from '../../../utils/maybe-error-props';
 import styles from './edit.module.scss';
@@ -69,6 +73,7 @@ export default function EditStrategyPage(props: EditStrategyPageProps) {
   const [isRunLoading, setIsRunLoading] = useState(false);
 
   const [phasesResult, setPhasesResult] = useState<RunResultDTOPhase[]>([]);
+  const [ordersResult, setOrdersResult] = useState<RunResultDTOOrder[]>([]);
 
   const onEdit = async (strategy: StrategyDTO): Promise<boolean> => {
     setIsUpdateLoading(true);
@@ -115,6 +120,7 @@ export default function EditStrategyPage(props: EditStrategyPageProps) {
         }
 
         setPhasesResult(data.phases);
+        setOrdersResult(data.orders ?? []);
       }
     } catch (error) {
       notification.error({
@@ -158,10 +164,11 @@ export default function EditStrategyPage(props: EditStrategyPageProps) {
           </Button>,
         ]}
       />
-      <Row>
-        <Col span={6} />
-        <Col span={18}>
-          <Space direction="vertical" style={{ width: '100%' }}>
+
+      {phasesResult.length === 0 ? null : (
+        <Row justify="end">
+          <Col span={18}>
+            <Typography.Title level={4}>Phases</Typography.Title>
             <Collapse>
               {phasesResult.map((phaseResult, i) => (
                 <Collapse.Panel
@@ -201,9 +208,50 @@ export default function EditStrategyPage(props: EditStrategyPageProps) {
                 </Collapse.Panel>
               ))}
             </Collapse>
-          </Space>
-        </Col>
-      </Row>
+          </Col>
+        </Row>
+      )}
+
+      {ordersResult.length === 0 ? null : (
+        <Row justify="end">
+          <Col span={18}>
+            <Divider />
+            <Typography.Title level={4}>Orders</Typography.Title>
+            <Table
+              dataSource={ordersResult}
+              columns={[
+                {
+                  title: 'Date',
+                  dataIndex: 'timestamp',
+                  key: 'date',
+                  render: (timestamp: number) =>
+                    moment(timestamp * 1000).format(),
+                },
+                {
+                  title: 'Type',
+                  dataIndex: 'type',
+                  key: 'type',
+                },
+                {
+                  title: 'Symbol',
+                  dataIndex: 'symbol',
+                  key: 'symbol',
+                },
+                {
+                  title: 'Quantity',
+                  dataIndex: 'quantity',
+                  key: 'quantity',
+                },
+                {
+                  title: 'Quantity',
+                  dataIndex: 'timestamp',
+                  key: 'quantity',
+                },
+              ]}
+            />
+          </Col>
+        </Row>
+      )}
     </Page>
   );
 }

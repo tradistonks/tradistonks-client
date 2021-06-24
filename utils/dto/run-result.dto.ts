@@ -11,6 +11,14 @@ export interface RunResultDTOPhase {
   csw_forced: number;
 }
 
+export interface RunResultDTOOrder {
+  type: 'Buy' | 'Sell';
+  symbol: string;
+  quantity: number;
+  timestamp: number;
+}
+
 export interface RunResultDTO {
   phases: RunResultDTOPhase[];
+  orders?: RunResultDTOOrder[];
 }
