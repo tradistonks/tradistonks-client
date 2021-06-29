@@ -18,7 +18,25 @@ export interface RunResultDTOOrder {
   timestamp: number;
 }
 
+export interface RunResultDTOHistoryCandle {
+  open: number;
+  high: number;
+  low: number;
+  close: number;
+  volume: number;
+  timestamp: number;
+}
+
+export interface RunResultDTOConfig {
+  timestamp_start: number;
+  timestamp_end: number;
+  granularity: number;
+}
+
 export interface RunResultDTO {
   phases: RunResultDTOPhase[];
   orders?: RunResultDTOOrder[];
+  history?: Record<number, Record<string, RunResultDTOHistoryCandle>>;
+  config?: RunResultDTOConfig;
+  pnl?: Record<number, Record<string, number>>;
 }

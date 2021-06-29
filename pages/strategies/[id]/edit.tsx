@@ -12,11 +12,13 @@ import { useForm } from 'antd/lib/form/Form';
 import moment from 'moment';
 import { GetServerSideProps } from 'next';
 import React, { useState } from 'react';
+import { Line } from 'react-chartjs-2';
 import { StrategyForm } from '../../../components/organisms/StrategyForm/StrategyForm';
 import Page, { PagePropsUser } from '../../../components/templates/Page/Page';
 import { APIExternal, APIInternal } from '../../../utils/api';
 import { LanguageDTO } from '../../../utils/dto/language.dto';
 import {
+  RunResultDTOHistoryCandle,
   RunResultDTOOrder,
   RunResultDTOPhase,
 } from '../../../utils/dto/run-result.dto';
@@ -74,6 +76,12 @@ export default function EditStrategyPage(props: EditStrategyPageProps) {
 
   const [phasesResult, setPhasesResult] = useState<RunResultDTOPhase[]>([]);
   const [ordersResult, setOrdersResult] = useState<RunResultDTOOrder[]>([]);
+  const [historyResult, setHistoryResult] =
+    useState<
+      Record<number, Record<string, RunResultDTOHistoryCandle>> | undefined
+    >(undefined);
+  const [pnl, setPnl] =
+    useState<Record<number, Record<string, number>> | undefined>(undefined);
 
   const onEdit = async (strategy: StrategyDTO): Promise<boolean> => {
     setIsUpdateLoading(true);
@@ -121,6 +129,8 @@ export default function EditStrategyPage(props: EditStrategyPageProps) {
 
         setPhasesResult(data.phases);
         setOrdersResult(data.orders ?? []);
+        setHistoryResult(data.history ?? undefined);
+        setPnl(data.pnl ?? undefined);
       }
     } catch (error) {
       notification.error({
@@ -244,6 +254,54 @@ export default function EditStrategyPage(props: EditStrategyPageProps) {
                 },
               ]}
             />
+          </Col>
+        </Row>
+      )}
+
+      {historyResult === undefined || pnl === undefined ? null : (
+        <Row justify="end">
+          <Col span={18}>
+            {(() => {
+              console.log(pnl);
+              const timestamps = Object.keys(pnl);
+
+              const labels = [];
+              const data: Record<string, number[]> = {};
+
+              for (let i = 0; i < timestamps.length; i += 100) {
+                const timestamp = Number(timestamps[i]);
+
+                labels.push(moment(timestamp * 1000).format('LLL'));
+
+                for (const symbol in pnl[timestamp]) {
+                  if (!data[symbol]) {
+                    data[symbol] = [];
+                  }
+
+                  data[symbol].push(pnl[timestamp][symbol] ?? 0);
+                }
+              }
+
+              return (
+                <Line
+                  type="line"
+                  data={{
+                    labels,
+                    datasets: Object.entries(data).map(([symbol, values]) => ({
+                      label: symbol,
+                      data: values,
+                      fill: false,
+                      tension: 0.4,
+                      backgroundColor: 'rgb(255, 99, 132, 0.5)',
+                      borderColor: 'rgba(255, 99, 132)',
+                    })),
+                  }}
+                  options={{
+                    responsive: true,
+                  }}
+                />
+              );
+            })()}
           </Col>
         </Row>
       )}
