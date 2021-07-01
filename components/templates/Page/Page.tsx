@@ -17,7 +17,7 @@ export type PageProps = PropsWithChildren<
 
     extra?: React.ReactNode;
 
-    onBack?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
+    onBack?: (e?: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
   }
 >;
 
