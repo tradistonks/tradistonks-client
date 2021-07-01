@@ -10,7 +10,7 @@ export type ContentProps = PropsWithChildren<{
 
   extra?: React.ReactNode;
 
-  onBack?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
+  onBack?: (e?: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
 }>;
 
 export default function Content(props: ContentProps) {
