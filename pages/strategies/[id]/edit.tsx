@@ -78,12 +78,12 @@ export default function EditStrategyPage(props: EditStrategyPageProps) {
 
   const [phasesResult, setPhasesResult] = useState<RunResultDTOPhase[]>([]);
   const [ordersResult, setOrdersResult] = useState<RunResultDTOOrder[]>([]);
-  const [historyResult, setHistoryResult] =
-    useState<
-      Record<number, Record<string, RunResultDTOHistoryCandle>> | undefined
-    >(undefined);
-  const [pnl, setPnl] =
-    useState<Record<number, Record<string, number>> | undefined>(undefined);
+  const [historyResult, setHistoryResult] = useState<
+    Record<number, Record<string, RunResultDTOHistoryCandle>> | undefined
+  >(undefined);
+  const [pnl, setPnl] = useState<
+    Record<number, Record<string, number>> | undefined
+  >(undefined);
 
   const onEdit = async (strategy: StrategyDTO): Promise<boolean> => {
     setIsUpdateLoading(true);
