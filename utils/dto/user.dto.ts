@@ -4,3 +4,7 @@ export interface UserDTO {
   email: string;
   roles: string[];
 }
+
+export interface UserWithPermissionsDTO extends UserDTO {
+  permissions: string[];
+}

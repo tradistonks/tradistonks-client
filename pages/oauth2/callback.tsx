@@ -18,7 +18,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const api = new APIInternal(context);
 
   try {
-    const currentUser = await api.getCurrentUser().catch(() => null);
+    const currentUser = await api
+      .getCurrentUserWithPermissions()
+      .catch(() => null);
 
     if (currentUser) {
       return {

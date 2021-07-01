@@ -31,29 +31,45 @@ export default function Header(props: HeaderProps) {
               icon={<SettingOutlined />}
               title="Administration"
             >
-              <Menu.ItemGroup title="Strategies">
-                <Menu.Item key="nav-admin-strategies-languages">
-                  <Link href="/admin/languages">
-                    <a>Languages</a>
-                  </Link>
-                </Menu.Item>
-              </Menu.ItemGroup>
+              {!props.currentUser.permissions.includes(
+                'manage-languages',
+              ) ? null : (
+                <Menu.ItemGroup title="Languages">
+                  <Menu.Item key="nav-admin-strategies-languages">
+                    <Link href="/admin/languages">
+                      <a>Languages</a>
+                    </Link>
+                  </Menu.Item>
+                </Menu.ItemGroup>
+              )}
               <Menu.ItemGroup title="Users">
-                <Menu.Item key="nav-admin-users-users">
-                  <Link href="/admin/users">
-                    <a>Users</a>
-                  </Link>
-                </Menu.Item>
-                <Menu.Item key="nav-admin-users-roles">
-                  <Link href="/admin/roles">
-                    <a>Roles</a>
-                  </Link>
-                </Menu.Item>
-                <Menu.Item key="nav-admin-users-permissions">
-                  <Link href="/admin/permissions">
-                    <a>Permissions</a>
-                  </Link>
-                </Menu.Item>
+                {!props.currentUser.permissions.includes(
+                  'manage-users',
+                ) ? null : (
+                  <Menu.Item key="nav-admin-users-users">
+                    <Link href="/admin/users">
+                      <a>Users</a>
+                    </Link>
+                  </Menu.Item>
+                )}
+                {!props.currentUser.permissions.includes(
+                  'manage-roles',
+                ) ? null : (
+                  <Menu.Item key="nav-admin-users-roles">
+                    <Link href="/admin/roles">
+                      <a>Roles</a>
+                    </Link>
+                  </Menu.Item>
+                )}
+                {!props.currentUser.permissions.includes(
+                  'manage-permissions',
+                ) ? null : (
+                  <Menu.Item key="nav-admin-users-permissions">
+                    <Link href="/admin/permissions">
+                      <a>Permissions</a>
+                    </Link>
+                  </Menu.Item>
+                )}
               </Menu.ItemGroup>
             </SubMenu>
           </>

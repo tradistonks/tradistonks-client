@@ -10,7 +10,7 @@ import { ApiError } from './api-error';
 import { AuthCallbackDTO } from './dto/auth-callback.dto';
 import { LanguageDTO } from './dto/language.dto';
 import { RunResultDTO } from './dto/run-result.dto';
-import { UserDTO } from './dto/user.dto';
+import { UserDTO, UserWithPermissionsDTO } from './dto/user.dto';
 import { MaybeErrorProps } from './maybe-error-props';
 import { SymbolSearchResponseDTO } from './dto/symbol-search-response.dto';
 import { PermissionDTO } from './dto/permission.dto';
@@ -136,6 +136,19 @@ export abstract class APIBase {
 
   async getCurrentUser() {
     return await this.request<UserDTO>('GET', `/users/me`);
+  }
+
+  async getCurrentUserWithPermissions(): Promise<UserWithPermissionsDTO> {
+    const user = await this.getCurrentUser();
+
+    return {
+      ...user,
+      permissions: await this.getCurrentUserPermissions(),
+    };
+  }
+
+  async getCurrentUserPermissions() {
+    return await this.request<string[]>('GET', `/users/me/permissions`);
   }
 
   async getUserStrategies(username: string) {

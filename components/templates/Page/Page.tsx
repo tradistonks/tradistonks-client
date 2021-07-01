@@ -1,13 +1,13 @@
 import { Layout } from 'antd';
 import Head from 'next/head';
 import React, { PropsWithChildren } from 'react';
-import { UserDTO } from '../../../utils/dto/user.dto';
+import { UserWithPermissionsDTO } from '../../../utils/dto/user.dto';
 import Content from '../../organisms/Content/Content';
 import Header from '../../organisms/Header/Header';
 import styles from './Page.module.scss';
 
 export type PagePropsUser = {
-  currentUser: UserDTO | null;
+  currentUser: UserWithPermissionsDTO | null;
 };
 
 export type PageProps = PropsWithChildren<
