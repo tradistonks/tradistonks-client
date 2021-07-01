@@ -10,7 +10,4 @@ module.exports = {
     OAUTH2_LOCAL_REDIRECT_URL: process.env.OAUTH2_LOCAL_REDIRECT_URL,
     OAUTH2_PKCE_STATE: process.env.OAUTH2_PKCE_STATE,
   },
-  future: {
-    webpack5: true,
-  },
 };
