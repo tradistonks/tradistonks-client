@@ -73,11 +73,17 @@ export abstract class APIBase {
     });
   }
 
-  async consent(email: string, password: string, consent_challenge: string) {
+  async consent(consent_challenge: string) {
     return this.request<ConsentResponseDTO>('POST', '/auth/consent', {
       body: {
-        email,
-        password,
+        consent_challenge,
+      },
+    });
+  }
+
+  async getConsent(consent_challenge: string) {
+    return this.request<{ client_id: string }>('GET', '/auth/consent', {
+      queries: {
         consent_challenge,
       },
     });

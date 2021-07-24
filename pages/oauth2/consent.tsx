@@ -1,5 +1,6 @@
 import { Button, notification } from 'antd';
 import { GetServerSideProps } from 'next';
+import getConfig from 'next/config';
 import Router from 'next/router';
 import React from 'react';
 import Form from '../../components/atoms/Form/Form';
@@ -7,6 +8,10 @@ import FormItem from '../../components/atoms/FormItem/FormItem';
 import Page from '../../components/templates/Page/Page';
 import { APIExternal, APIInternal } from '../../utils/api';
 import { MaybeErrorProps } from '../../utils/maybe-error-props';
+
+const {
+  publicRuntimeConfig: { OAUTH2_LOCAL_CLIENT_ID },
+} = getConfig();
 
 export const getServerSideProps: GetServerSideProps<
   MaybeErrorProps<OAuth2ConsentPageProps>
@@ -38,6 +43,30 @@ export const getServerSideProps: GetServerSideProps<
       };
     }
 
+    const consentInfo = await api.getConsent(consent_challenge);
+
+    if (!consentInfo) {
+      return {
+        redirect: {
+          permanent: false,
+          destination: '/login',
+        },
+      };
+    }
+
+    if (consentInfo.client_id === OAUTH2_LOCAL_CLIENT_ID) {
+      try {
+        const data = await api.consent(consent_challenge);
+
+        return {
+          redirect: {
+            permanent: false,
+            destination: data.redirect_to,
+          },
+        };
+      } catch {}
+    }
+
     return {
       props: {
         consent_challenge,
@@ -55,14 +84,9 @@ type OAuth2ConsentPageProps = {
 export default function OAuth2ConsentPage(props: OAuth2ConsentPageProps) {
   const api = new APIExternal();
 
-  type ConsentFormData = {
-    email: string;
-    password: string;
-  };
-
-  const onConsent = async ({ email, password }: ConsentFormData) => {
+  const onConsent = async () => {
     try {
-      const data = await api.consent(email, password, props.consent_challenge);
+      const data = await api.consent(props.consent_challenge);
 
       Router.replace(data.redirect_to);
     } catch (error) {
