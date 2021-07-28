@@ -152,7 +152,7 @@ export default function UsersPage(props: UsersPageProps) {
             // eslint-disable-next-line react/display-name
             render: (_, user) => (
               <ul
-                key={`user-${user._id}-roles`}
+                key={`user-${user._id}-permissions`}
                 style={{
                   paddingLeft: '1em',
                 }}
