@@ -52,7 +52,7 @@ export default function CreateLanguagePage(props: CreateLanguagePageProps) {
         message: 'Successfully created the language',
       });
 
-      Router.push(`/languages/${data._id}/edit`);
+      Router.push(`/admin/languages/${data._id}/edit`);
     } catch (error) {
       notification.error({
         message: 'Failed to create the language',
