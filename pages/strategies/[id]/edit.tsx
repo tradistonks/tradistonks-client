@@ -230,6 +230,7 @@ export default function EditStrategyPage(props: EditStrategyPageProps) {
                 </Collapse.Panel>
               ))}
             </Collapse>
+            {phasesResult.length === 0 ? null : <Divider></Divider>}
           </Col>
         </Row>
       )}
