@@ -17,6 +17,7 @@ import { StrategyForm } from '../../../components/organisms/StrategyForm/Strateg
 import Page, { PagePropsUser } from '../../../components/templates/Page/Page';
 import { APIExternal, APIInternal } from '../../../utils/api';
 import { LanguageDTO } from '../../../utils/dto/language.dto';
+import { StrategyQualityDTO } from '../../../utils/dto/quality.dto';
 import {
   RunResultDTOHistoryCandle,
   RunResultDTOOrder,
@@ -75,6 +76,7 @@ export default function EditStrategyPage(props: EditStrategyPageProps) {
 
   const [isUpdateLoading, setIsUpdateLoading] = useState(false);
   const [isRunLoading, setIsRunLoading] = useState(false);
+  const [isTestLoading, setIsTestLoading] = useState(false);
 
   const [phasesResult, setPhasesResult] = useState<RunResultDTOPhase[]>([]);
   const [ordersResult, setOrdersResult] = useState<RunResultDTOOrder[]>([]);
@@ -84,6 +86,8 @@ export default function EditStrategyPage(props: EditStrategyPageProps) {
   const [pnl, setPnl] = useState<
     Record<number, Record<string, number>> | undefined
   >(undefined);
+
+  const [qualityErrors, setQualityErrors] = useState<StrategyQualityDTO[]>([]);
 
   const onEdit = async (strategy: StrategyDTO): Promise<boolean> => {
     setIsUpdateLoading(true);
@@ -144,6 +148,27 @@ export default function EditStrategyPage(props: EditStrategyPageProps) {
     setIsRunLoading(false);
   };
 
+  const onQualityTest = async () => {
+    setIsTestLoading(true);
+
+    try {
+      const strategyData = await form.validateFields();
+
+      if (await onEdit(strategyData)) {
+        const data = await api.testStrategyQuality(props.strategy._id);
+
+        setQualityErrors(data.filter((file) => file.errors.length > 0));
+      }
+    } catch (error) {
+      notification.error({
+        message: 'Failed to run the strategy',
+        description: api.errorToString(error),
+      });
+    }
+
+    setIsTestLoading(false);
+  };
+
   return (
     <Page
       currentUser={props.currentUser}
@@ -156,6 +181,15 @@ export default function EditStrategyPage(props: EditStrategyPageProps) {
         onFinish={onEdit}
         languages={props.languages}
         actions={[
+          <Button
+            key="action-run"
+            type="default"
+            disabled={!isTestLoading && isUpdateLoading}
+            loading={isTestLoading && !isUpdateLoading}
+            onClick={onQualityTest}
+          >
+            Update and Test Quality
+          </Button>,
           <Button
             key="action-run"
             type="default"
@@ -176,6 +210,29 @@ export default function EditStrategyPage(props: EditStrategyPageProps) {
           </Button>,
         ]}
       />
+
+      {qualityErrors.length === 0 ? null : (
+        <Row justify="end">
+          <Col span={18}>
+            <Typography.Title level={4}>Quality Test</Typography.Title>
+            <Collapse>
+              {qualityErrors.map((file, i) => (
+                <Collapse.Panel
+                  header={file.path}
+                  key={i}
+                  extra={<span>{file.errors.length} errors</span>}
+                >
+                  <ul>
+                    {file.errors.map((error, j) => (
+                      <li key={j}>{error}</li>
+                    ))}
+                  </ul>
+                </Collapse.Panel>
+              ))}
+            </Collapse>
+          </Col>
+        </Row>
+      )}
 
       {phasesResult.length === 0 ? null : (
         <Row justify="end">

@@ -15,6 +15,7 @@ import { MaybeErrorProps } from './maybe-error-props';
 import { SymbolSearchResponseDTO } from './dto/symbol-search-response.dto';
 import { PermissionDTO } from './dto/permission.dto';
 import { RoleDTO } from './dto/role.dto';
+import { StrategyQualityDTO } from './dto/quality.dto';
 
 const {
   serverRuntimeConfig: { API_INTERNAL_HOST },
@@ -107,6 +108,13 @@ export abstract class APIBase {
 
   async runStrategy(id: string) {
     return this.request<RunResultDTO>('POST', `/strategies/${id}/run`);
+  }
+
+  async testStrategyQuality(id: string) {
+    return this.request<StrategyQualityDTO[]>(
+      'GET',
+      `/strategies/${id}/quality`,
+    );
   }
 
   async getLanguages() {
